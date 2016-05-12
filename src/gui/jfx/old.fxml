@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="100.0" prefHeight="1068.0" prefWidth="1775.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <left>
+        <ScrollPane prefHeight="1204.0" prefWidth="466.0" BorderPane.alignment="CENTER">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="783.0" prefWidth="460.0">
+                    <children>
+                        <Accordion prefHeight="497.0" prefWidth="451.0">
+                            <panes>
+                                <TitledPane animated="false" text="Settings">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                            <children>
+                                                <VBox>
+                                                    <children>
+                                                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="460.0" text="Button" textOverrun="CENTER_ELLIPSIS" />
+                                                        <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="460.0" text="Button" />
+                                                        <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="460.0" text="Button" />
+                                                        <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="460.0" text="Button" />
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </TitledPane>
+                                <TitledPane animated="false" text="Prepare phase">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane animated="false" prefHeight="383.0" prefWidth="476.0" text="Action phase">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="325.0" prefWidth="462.0">
+                                            <children>
+                                                <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="57.0" prefWidth="459.0" text="Button" />
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </TitledPane>
+                            </panes>
+                        </Accordion>
+                    </children>
+                </AnchorPane>
+            </content>
+        </ScrollPane>
+    </left>
+    <center>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <bottom>
+                <TextArea fx:id="outputTextArea" prefHeight="265.0" prefWidth="1287.0" BorderPane.alignment="CENTER" />
+            </bottom>
+            <center>
+                <ScrollPane id="spCanvas" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <content>
+                        <BorderPane prefHeight="705.0" prefWidth="1156.0" style="-fx-background-color: grey;">
+                            <center>
+                                <Canvas height="542.0" width="662.0" BorderPane.alignment="CENTER" />
+                            </center>
+                        </BorderPane>
+                    </content>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </center>
+</BorderPane>
+
