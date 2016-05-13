@@ -1,6 +1,7 @@
 package gui.swing;
 
 import app.AppContext;
+import ucc.MazeDTO;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -12,38 +13,24 @@ import java.awt.event.WindowEvent;
 /**
  * Created by jvdur on 09/05/2016.
  */
-public class Frame extends JFrame implements ChangeListener {
+public class MazeFrame extends JFrame implements ChangeListener {
 
+    // Global frame variables
+    private final String name;
 
     // CONTAINERS
-    // Main container
-    private JPanel mainContainer;
-
-    // Side option pane
-    private JPanel sideOptionPane;
-    private JPanel menuPane;
+    private JPanel canvas;
 
 
     /**
      * Main constructer
      */
-    public Frame() {
+    public MazeFrame(MazeDTO maze, String name) {
+        this.name = name;
 
         initFrame();
 
-        initComponentStructure();
-
-        // TODO
-        // initJMenuBar();
-
-        // TODO
-        initSideOptionPane();
-
-        // TODO
-        // initVisualisationPane();
-
-        // TODO
-        // initCliOutputPane();
+        initCanvas(maze);
 
         this.setVisible(true);
     }
@@ -76,43 +63,13 @@ public class Frame extends JFrame implements ChangeListener {
         });
     }
 
-
-    private void initComponentStructure() {
-
-        /*
-            RootPane
-                > MainContainer : center
-                    > OptionPane : West
-                    > VisualisationPane : Center
-                    > CliPane : South
-        */
-
-        // Main container
-        mainContainer = new JPanel(new BorderLayout());
-        this.add(mainContainer);
+    private void initCanvas(MazeDTO maze) {
+        canvas = new MazeCanvas(maze, this);
+        this.add(canvas, BorderLayout.CENTER);
     }
 
 
-    private void initSideOptionPane() {
 
-        sideOptionPane = new JPanel(new BorderLayout());
-        mainContainer.add(sideOptionPane, BorderLayout.WEST);
-
-        menuPane = new JPanel(new GridLayout(4, 1));
-
-        JButton jbOpAddAnchor = new JButton("Add anchor");
-        JButton jbOpSetGateway = new JButton("Set gateway");
-        JButton jbOpConfig = new JButton("Configure");
-        JButton jbOpStartStop = new JButton("Start");
-
-        menuPane.add(jbOpAddAnchor);
-        menuPane.add(jbOpSetGateway);
-        menuPane.add(jbOpConfig);
-        menuPane.add(jbOpStartStop);
-
-        sideOptionPane.add(menuPane, BorderLayout.NORTH);
-
-    }
 
 
     @Override

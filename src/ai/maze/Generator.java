@@ -53,12 +53,22 @@ public class Generator {
     private Section[] keySection;
 
 
+    /**
+     * Constructor : set a new maze-generator object
+     * @param sizex the x axis lenght of the maze
+     * @param sizey
+     * @param level
+     */
     public Generator(int sizex, int sizey, int level) {
         this.sizex = sizex;
         this.sizey = sizey;
         this.level = level;
     }
 
+    /**
+     * Generate and return the maze
+     * @return a generated MazeDTO
+     */
     public MazeDTO generate() {
 
         // Build maze
@@ -168,7 +178,6 @@ public class Generator {
             }
         }
     }
-
 
     /**
      * Create link link between nodes
@@ -590,7 +599,6 @@ public class Generator {
      * @param args
      */
     public static void main(String args[]) {
-
         Generator g = new Generator(7, 7, 3);
         g.generate();
     }
@@ -613,7 +621,7 @@ public class Generator {
         System.out.println("BEST WAY");
         for (int i = 0; i < sizex; i++) {
             for (int j = 0; j < sizey; j++) {
-                System.out.print((mazeMultiData[i][j][1] > 0) ? "#" : " ");
+                System.out.print((mazeMultiData[i][j][1] > 0) ? "#" : ".");
             }
             System.out.println("");
         }
