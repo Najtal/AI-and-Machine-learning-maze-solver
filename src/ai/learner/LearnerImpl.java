@@ -13,8 +13,11 @@ import model.MazeLearningModel;
 public class LearnerImpl extends LearnerRunner {
 
 
+    private MazeLearningModel mlm;
+
     public LearnerImpl(GlobalLearningModel glm) {
         super(glm);
+        mlm = new MazeLearningModel(glm);
     }
 
     @Override
@@ -24,7 +27,7 @@ public class LearnerImpl extends LearnerRunner {
         for(int i=0; i<glm.getNbMaze(); i++) {
 
             // Create a new Model (withe a maze)
-            MazeLearningModel mlm = new MazeLearningModel(glm);
+            mlm = new MazeLearningModel(glm);
             // Instanciate a solver
             Solver s = new SolverImpl(mlm.getMazeNinja());
             // Learn from maze
@@ -75,5 +78,7 @@ public class LearnerImpl extends LearnerRunner {
         // TODO
     }
 
-
+    public MazeLearningModel getMazeLearningModel() {
+        return mlm;
+    }
 }

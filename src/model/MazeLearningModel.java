@@ -1,8 +1,12 @@
 package model;
 
 import ai.maze.Generator;
+import app.AppContext;
+import exception.FatalException;
+import exception.MazeException;
 import ucc.MazeDTO;
 import ucc.MazeUCC;
+import util.Log;
 
 import java.util.Random;
 
@@ -23,15 +27,33 @@ public class MazeLearningModel {
     public MazeLearningModel(GlobalLearningModel glm) {
 
         this.glm = glm;
+        int trials = 1;
+        int trialsMax = Math.max((Integer.parseInt(AppContext.INSTANCE.getProperty("mazeGenTrials"))), 1);
 
         Random rdm = new Random();
 
-        int sizex = glm.getmXmin() + rdm.nextInt(glm.getmXmax()-glm.getmXmin());
-        int sizey = glm.getmYmin() + rdm.nextInt(glm.getmYmax()-glm.getmYmin());
-        int level = glm.getmMinLevel() + rdm.nextInt(glm.getmMaxLevel()-glm.getmMinLevel());
+        int sizex = Math.max(2, (glm.getmXmax()-glm.getmXmin() <= 0) ?  glm.getmXmin() : glm.getmXmin() + rdm.nextInt(glm.getmXmax()-glm.getmXmin()));
+        int sizey = Math.max(2, (glm.getmYmax()-glm.getmYmin() <= 0) ? glm.getmYmin() : glm.getmYmin() + rdm.nextInt(glm.getmYmax()-glm.getmYmin()));
+        int level = Math.max(0, (glm.getmMaxLevel()-glm.getmMinLevel() <= 0) ? glm.getmMinLevel() : glm.getmMinLevel() + rdm.nextInt(glm.getmMaxLevel()-glm.getmMinLevel()));
 
         Generator gm = new Generator(sizex, sizey, level);
-        mazeOmniscient = gm.generate();
+
+        while (true) {
+            try {
+                mazeOmniscient = gm.generate();
+                break;
+            } catch (MazeException me) {
+                if (trials == trialsMax) {
+                    Log.logSevere("Could not create the maze, parameters are to restrictive !");
+                    throw new FatalException("Could not create the maze, parameters are to restrictive !");
+                } else {
+                    trials++;
+                }
+            }
+            break;
+        }
+
+
 
         mazeNinja = MazeUCC.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
     }

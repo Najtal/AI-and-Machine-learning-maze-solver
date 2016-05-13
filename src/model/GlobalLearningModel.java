@@ -18,21 +18,13 @@ public class GlobalLearningModel {
     private int mYmax;
     private int mMinLevel;
     private int mMaxLevel;
+
     private RunningMode rMode;
     private RunningStatus rStatus;
 
     private LearnerRunner runningThread;
 
-    /**
-     * private constructor
-     */
-    public GlobalLearningModel() {
-
-        runningThread = new LearnerImpl(this);
-
-    }
-
-    public void setLearningPlan(int nbMaze, int nbIterationPerMaze,
+    public GlobalLearningModel(int nbMaze, int nbIterationPerMaze,
                                 int mXmin, int mYmin, int mXmax, int mYmax,
                                 int mMinLevel, int mMaxLevel, RunningMode rMode) {
         this.nbMaze = nbMaze;
@@ -44,6 +36,8 @@ public class GlobalLearningModel {
         this.mMinLevel = mMinLevel;
         this.mMaxLevel = mMaxLevel;
         this.rMode = rMode;
+
+        runningThread = new LearnerImpl(this);
     }
 
     public void start() {
@@ -89,5 +83,9 @@ public class GlobalLearningModel {
 
     public RunningStatus getrStatus() {
         return rStatus;
+    }
+
+    public LearnerRunner getRunningThread() {
+        return runningThread;
     }
 }

@@ -25,12 +25,13 @@ public class MazeFrame extends JFrame implements ChangeListener {
     /**
      * Main constructer
      */
-    public MazeFrame(MazeDTO maze, String name) {
+    public MazeFrame(MazeDTO maze, String name, boolean isOmniscient) {
+
         this.name = name;
 
         initFrame();
 
-        initCanvas(maze);
+        initCanvas(maze, isOmniscient);
 
         this.setVisible(true);
     }
@@ -63,8 +64,8 @@ public class MazeFrame extends JFrame implements ChangeListener {
         });
     }
 
-    private void initCanvas(MazeDTO maze) {
-        canvas = new MazeCanvas(maze, this);
+    private void initCanvas(MazeDTO maze, boolean isOmniscient) {
+        canvas = new MazeCanvas(maze, this, isOmniscient);
         this.add(canvas, BorderLayout.CENTER);
     }
 

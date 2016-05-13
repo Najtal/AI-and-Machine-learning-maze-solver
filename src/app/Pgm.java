@@ -1,8 +1,10 @@
 package app;
 
-import ai.maze.Generator;
+import ai.learner.LearnerImpl;
+import ai.learner.LearnerRunner;
+import constant.RunningMode;
 import gui.swing.MazeFrame;
-import ucc.MazeDTO;
+import model.GlobalLearningModel;
 import util.Log;
 
 
@@ -22,28 +24,21 @@ public class Pgm {
 		Log.logInfo("Program started all good");
 
 
-		Generator g = new Generator(11, 11, 4);
-		MazeDTO m = g.generate();
-
-		// Show Maze Frame
-		new MazeFrame(m, "maze");
-
-		/*
-
-		// Create a Global learning model
-		GlobalLearningModel glm = new GlobalLearningModel();
-
-		// Init the context of the maze execution
-		glm.setLearningPlan(3, 2, 5, 5, 5, 5, 2, 3, RunningMode.FULL_SPEED);
+		// Create and Init a Global learning model
+		GlobalLearningModel glm = new GlobalLearningModel(3, 2, 20, 20, 20, 20, 7, 7, RunningMode.FULL_SPEED);
 
 		// Create a Learner and give it the context (the GlobalLearningModel)
 		LearnerRunner lr = new LearnerImpl(glm);
+
+		// Show mazes
+		new MazeFrame(glm.getRunningThread().getMazeLearningModel().getMazeNinja(), "maze", false);
+		new MazeFrame(glm.getRunningThread().getMazeLearningModel().getMazeOmniscient(), "maze", true);
 
 		// Run it !
 		lr.run();
 
 
-		*/
+
 
 
 	}

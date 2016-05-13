@@ -18,6 +18,9 @@ public class SolverImpl implements Solver {
          *          maze.getStartNode()
          *          maze.getSizex()
          *          maze.getSizey()
+         *
+         *          Important, must update know position in mazeStructure !
+         *          maze.mazeStructure[npX][npY] = 1;
          */
 
     }

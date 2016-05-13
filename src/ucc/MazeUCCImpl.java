@@ -2,6 +2,8 @@ package ucc;
 
 import bizz.BizzFactory;
 
+import java.util.HashMap;
+
 /**
  * Use case cntroller over RSSI
  */
@@ -28,6 +30,9 @@ public class MazeUCCImpl implements MazeUCC {
     @Override
     public MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze) {
         MazeDTO mNinja = BizzFactory.INSTANCE.createNinjaMaze(maze.getStartNode(), maze.getSizex(), maze.getSizey());
+        mNinja.setDoorPosition(new HashMap<Integer, NodeDTO>());
+        mNinja.setKeyPosition(new HashMap<Integer, NodeDTO>());
+        mNinja.setMazeStructure(new int[maze.getSizex()][maze.getSizey()]);
         return mNinja;
     }
 
