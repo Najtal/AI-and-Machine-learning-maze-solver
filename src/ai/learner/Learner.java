@@ -5,6 +5,12 @@ package ai.learner;
  */
 public interface Learner {
 
+    void pause();
 
+    void start();
+
+    void makeOneStep();
+
+    void stop();
 
 }

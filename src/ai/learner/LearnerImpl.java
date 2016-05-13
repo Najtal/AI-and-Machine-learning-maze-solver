@@ -55,4 +55,25 @@ public class LearnerImpl extends LearnerRunner {
 
     }
 
+    @Override
+    public void pause() {
+        // TODO
+    }
+
+    @Override
+    public void start() {
+        // TODO
+    }
+
+    @Override
+    public void makeOneStep() {
+        // TODO
+    }
+
+    @Override
+    public void stop() {
+        // TODO
+    }
+
+
 }
