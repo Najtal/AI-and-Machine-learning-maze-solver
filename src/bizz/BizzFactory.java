@@ -25,7 +25,7 @@ public interface BizzFactory {
      * @param mazeDoors
      * @return
      */
-	Maze createMaze(final Node startNode, final int sizex, final int sizey,
+	Maze createMaze(final NodeDTO startNode, final int sizex, final int sizey,
 					int[][] mazeStructure, int[][] mazeKeys, int[][] mazeDoors);
 
 
@@ -35,7 +35,7 @@ public interface BizzFactory {
 	 * @param sizex
 	 * @param sizey
      */
-	Maze createNinjaMaze(final Node startNode, final int sizex, final int sizey);
+	Maze createNinjaMaze(final NodeDTO startNode, final int sizex, final int sizey);
 
 	/**
 	 * Create new Node

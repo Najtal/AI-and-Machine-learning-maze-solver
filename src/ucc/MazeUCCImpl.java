@@ -1,5 +1,7 @@
 package ucc;
 
+import bizz.BizzFactory;
+
 /**
  * Use case cntroller over RSSI
  */
@@ -23,5 +25,10 @@ public class MazeUCCImpl implements MazeUCC {
     private MazeUCCImpl() {
     }
 
+    @Override
+    public MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze) {
+        MazeDTO mNinja = BizzFactory.INSTANCE.createNinjaMaze(maze.getStartNode(), maze.getSizex(), maze.getSizey());
+        return mNinja;
+    }
 
 }

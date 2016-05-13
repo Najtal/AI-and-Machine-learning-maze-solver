@@ -9,10 +9,7 @@ import ucc.NodeUCC;
 import util.Position;
 import util.Section;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by jvdur on 12/05/2016.
@@ -118,12 +115,47 @@ public class Generator {
         displayKeys();
 
 
-        System.out.println();
-
-
-        return null;
-
+        return getMaze();
     }
+
+
+    private MazeDTO  getMaze() {
+
+        int[][] mazeKeys = new int[sizex][sizey];
+        int[][] mazeDoors = new int[sizex][sizey];
+
+        Map<Integer, NodeDTO> doorPosition = new HashMap<>();
+        Map<Integer, NodeDTO> keyPosition = new HashMap<>();
+
+        for(int i=0; i<sizex; i++) {
+            for(int j=0; j<sizey; j++) {
+                mazeKeys[i][j] = mazeMultiData[i][j][4];
+                mazeDoors[i][j] = mazeMultiData[i][j][3];
+
+                if (mazeMultiData[i][j][3] != 0) {
+                    doorPosition.put(mazeMultiData[i][j][3], nodeStrcture[i][j]);
+                }
+
+                if (mazeMultiData[i][j][4] != 0) {
+                    keyPosition.put(mazeMultiData[i][j][4], nodeStrcture[i][j]);
+                }
+
+            }
+        }
+
+        MazeDTO newMaze = BizzFactory.INSTANCE.createMaze(mazeStartNode, sizex, sizey, intStructure, mazeKeys, mazeDoors);
+
+        newMaze.setDoorPosition(doorPosition);
+        newMaze.setNbdoor(doorPosition.size());
+
+        newMaze.setKeyPosition(keyPosition);
+        newMaze.setNbKey(keyPosition.size());
+
+        newMaze.setGoalNode(mazeGoalNode);
+
+        return newMaze;
+    }
+
 
 
     /**

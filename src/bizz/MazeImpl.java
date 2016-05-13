@@ -1,5 +1,7 @@
 package bizz;
 
+import ucc.NodeDTO;
+
 import java.util.Map;
 
 /**
@@ -7,11 +9,12 @@ import java.util.Map;
 public class MazeImpl extends BizzObjectImpl implements Maze {
 
 	// Maze graph solver approach
-	private Node startNode;
+	private NodeDTO startNode;
+	private NodeDTO goalNode;
 	private int nbKey;
-	private Map<Integer,Node> keyPosition;
+	private Map<Integer,NodeDTO> keyPosition;
 	private int nbdoor;
-	private Map<Integer,Node> doorPosition;
+	private Map<Integer,NodeDTO> doorPosition;
 
 	// Maze gui approach
 	private int[][] mazeStructure;
@@ -27,7 +30,7 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	 * @param sizex
      * @param sizey
      */
-	public MazeImpl(final Node startNode, final int sizex, final int sizey) {
+	public MazeImpl(final NodeDTO startNode, final int sizex, final int sizey) {
 		super();
 		this.startNode = startNode;
 		this.sizex = sizex;
@@ -43,7 +46,7 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	 * @param mazeKeys
      * @param mazeDoors
      */
-	public MazeImpl(final Node startNode, final int sizex, final int sizey,
+	public MazeImpl(final NodeDTO startNode, final int sizex, final int sizey,
 					int[][] mazeStructure, int[][] mazeKeys, int[][] mazeDoors) {
 		super();
 		this.startNode = startNode;
@@ -68,11 +71,11 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	 * GETTERS AND SETTERS
 	 */
 
-	public Node getStartNode() {
+	public NodeDTO getStartNode() {
 		return startNode;
 	}
 
-	public void setStartNode(Node startNode) {
+	public void setStartNode(NodeDTO startNode) {
 		this.startNode = startNode;
 	}
 
@@ -84,11 +87,11 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 		this.nbKey = nbKey;
 	}
 
-	public Map<Integer, Node> getKeyPosition() {
+	public Map<Integer, NodeDTO> getKeyPosition() {
 		return keyPosition;
 	}
 
-	public void setKeyPosition(Map<Integer, Node> keyPosition) {
+	public void setKeyPosition(Map<Integer, NodeDTO> keyPosition) {
 		this.keyPosition = keyPosition;
 	}
 
@@ -100,11 +103,11 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 		this.nbdoor = nbdoor;
 	}
 
-	public Map<Integer, Node> getDoorPosition() {
+	public Map<Integer, NodeDTO> getDoorPosition() {
 		return doorPosition;
 	}
 
-	public void setDoorPosition(Map<Integer, Node> doorPosition) {
+	public void setDoorPosition(Map<Integer, NodeDTO> doorPosition) {
 		this.doorPosition = doorPosition;
 	}
 
@@ -146,5 +149,13 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 
 	public void setSizey(int sizey) {
 		this.sizey = sizey;
+	}
+
+	public NodeDTO getGoalNode() {
+		return goalNode;
+	}
+
+	public void setGoalNode(NodeDTO goalNode) {
+		this.goalNode = goalNode;
 	}
 }

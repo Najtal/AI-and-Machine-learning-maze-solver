@@ -31,13 +31,13 @@ public class BizzFactoryImpl implements BizzFactory {
 
 
     @Override
-    public Maze createMaze(final Node startNode, final int sizex, final int sizey,
+    public Maze createMaze(final NodeDTO startNode, final int sizex, final int sizey,
                            int[][] mazeStructure, int[][] mazeKeys, int[][] mazeDoors) {
         return new MazeImpl(startNode, sizex, sizey, mazeStructure, mazeKeys, mazeDoors);
     }
 
     @Override
-    public Maze createNinjaMaze(Node startNode, int sizex, int sizey) {
+    public Maze createNinjaMaze(NodeDTO startNode, int sizex, int sizey) {
         return new MazeImpl(startNode, sizex, sizey);
     }
 

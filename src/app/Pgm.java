@@ -1,5 +1,7 @@
 package app;
 
+import constant.RunningMode;
+import model.GlobalLearningModel;
 import util.Log;
 
 
@@ -18,6 +20,9 @@ public class Pgm {
 
 		Log.logInfo("Program started all good");
 
+		GlobalLearningModel glm = new GlobalLearningModel();
+
+		glm.setLearningPlan(3, 2, 5, 5, 5, 5, 2, 3, RunningMode.FULL_SPEED);
 
 	}
 

@@ -1,8 +1,6 @@
 package ucc;
 
 
-import bizz.Node;
-
 import java.util.Map;
 
 /**
@@ -12,25 +10,25 @@ import java.util.Map;
  */
 public interface MazeDTO {
 
-    Node getStartNode();
+    NodeDTO getStartNode();
 
-    void setStartNode(Node startNode);
+    void setStartNode(NodeDTO startNode);
 
     int getNbKey();
 
     void setNbKey(int nbKey);
 
-    Map<Integer, Node> getKeyPosition();
+    Map<Integer, NodeDTO> getKeyPosition();
 
-    void setKeyPosition(Map<Integer, Node> keyPosition);
+    void setKeyPosition(Map<Integer, NodeDTO> keyPosition);
 
     int getNbdoor();
 
     void setNbdoor(int nbdoor);
 
-    Map<Integer, Node> getDoorPosition();
+    Map<Integer, NodeDTO> getDoorPosition();
 
-    void setDoorPosition(Map<Integer, Node> doorPosition);
+    void setDoorPosition(Map<Integer, NodeDTO> doorPosition);
 
     int[][] getMazeStructure();
 
@@ -51,5 +49,9 @@ public interface MazeDTO {
     int getSizey();
 
     void setSizey(int sizey);
+
+    NodeDTO getGoalNode();
+
+    void setGoalNode(NodeDTO goalNode);
 
 }
