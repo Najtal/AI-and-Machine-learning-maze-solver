@@ -1,11 +1,6 @@
 package model;
 
-import ai.learner.ERSimpleLearner;
 import ai.maze.Generator;
-import ai.solver.MSSimpleSolver;
-import ai.solver.Solver;
-import constant.RunningMode;
-import constant.RunningStatus;
 import ucc.MazeDTO;
 import ucc.MazeUCC;
 
@@ -17,19 +12,17 @@ import java.util.Random;
 public class MazeLearningModel {
 
     private GlobalLearningModel glm;
-    private final ERSimpleLearner erSimpleLearner;
     private boolean goForNextStep;
     private MazeDTO mazeOmniscient;
     private MazeDTO mazeNinja;
 
 
     /**
-     * private constructor
+     * Constructor: generate maze and make it a ninja maze copy
      */
-    public MazeLearningModel(GlobalLearningModel glm, ERSimpleLearner erSimpleLearner) {
+    public MazeLearningModel(GlobalLearningModel glm) {
 
         this.glm = glm;
-        this.erSimpleLearner = erSimpleLearner;
 
         Random rdm = new Random();
 
@@ -41,29 +34,30 @@ public class MazeLearningModel {
         mazeOmniscient = gm.generate();
 
         mazeNinja = MazeUCC.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
-
     }
 
 
-    public void start() {
+    /*
+     * GETTERS
+     */
+    public boolean isGoForNextStep() {
+        return goForNextStep;
+    }
 
-        Solver s = new MSSimpleSolver(mazeNinja);
+    public MazeDTO getMazeOmniscient() {
+        return mazeOmniscient;
+    }
 
-        while(glm.getrStatus() == RunningStatus.RUNNING
-                && ( glm.getrMode() == RunningMode.FULL_SPEED
-                || glm.getrMode() == RunningMode.MAZE_BY_MAZE
-                || goForNextStep)) {
-
-            // TODO : must call solver over here
+    public MazeDTO getMazeNinja() {
+        return mazeNinja;
+    }
 
 
-            s.doOneStep();
 
-            if (s.isSolved()) {
-                return;
-            }
-
-        }
-
+    /*
+     * SETTERS
+     */
+    public void setGoForNextStep(boolean goForNextStep) {
+        this.goForNextStep = goForNextStep;
     }
 }

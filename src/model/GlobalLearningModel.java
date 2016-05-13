@@ -1,7 +1,7 @@
 package model;
 
-import ai.learner.ERSimpleLearner;
-import ai.learner.MainExecutionRunner;
+import ai.learner.LearnerImpl;
+import ai.learner.LearnerRunner;
 import constant.RunningMode;
 import constant.RunningStatus;
 
@@ -21,14 +21,14 @@ public class GlobalLearningModel {
     private RunningMode rMode;
     private RunningStatus rStatus;
 
-    private MainExecutionRunner runningThread;
+    private LearnerRunner runningThread;
 
     /**
      * private constructor
      */
     public GlobalLearningModel() {
 
-        runningThread = new ERSimpleLearner(this);
+        runningThread = new LearnerImpl(this);
 
     }
 

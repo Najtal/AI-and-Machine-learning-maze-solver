@@ -5,14 +5,13 @@ import ucc.MazeDTO;
 /**
  * Created by jvdur on 13/05/2016.
  */
-public class MSSimpleSolver implements Solver {
-
+public class SolverImpl implements Solver {
 
     /**
      *
      * @param maze
      */
-    public MSSimpleSolver(MazeDTO maze) {
+    public SolverImpl(MazeDTO maze) {
 
         /**
          * The MazeDTO received only contains the
@@ -30,6 +29,5 @@ public class MSSimpleSolver implements Solver {
 
     @Override
     public void doOneStep() {
-
     }
 }
