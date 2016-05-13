@@ -47,19 +47,38 @@ public class MazeCanvas  extends JPanel {
             }
         }
 
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 40));
+
         // Draw the doors
         for (NodeDTO door : maze.getDoorPosition().values()) {
-            int nbDoor = door.getIsDoor();
+            String nbDoor = door.getIsDoor()+"";
 
             g.setColor(Color.BLUE);
-            g.fillRect(door.getPosx()*boxWidth, door.getPosy()*boxHeight,
-                    (door.getPosx()+1)*boxWidth, (door.getPosy()+1)*boxHeight);
-            //g.drawChars(new char[]{(char) nbDoor}, door.getPosx()*boxWidth+boxWidth/3, door.getPosy()*boxHeight+boxWidth/3,
-            //        (door.getPosx()+1)*boxWidth+boxWidth/3, (door.getPosy()+1)*boxHeight+boxWidth/3);
+            g.fillOval(door.getPosy()*boxWidth, door.getPosx()*boxHeight,boxWidth, boxHeight);
+
+            g.setColor(Color.WHITE);
+            g.drawString(nbDoor, (int) door.getPosy()*boxWidth+45, (int) door.getPosx()*boxHeight+45);
+
         }
 
+        // Draw the keys
+        for (NodeDTO key : maze.getKeyPosition().values()) {
+            String nbDoor = key.getHasKey()+"";
 
-        // Draw the Keys
+            g.setColor(Color.GREEN);
+            g.fillOval(key.getPosy()*boxWidth, key.getPosx()*boxHeight,boxWidth, boxHeight);
+
+            g.setColor(Color.WHITE);
+            g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
+        }
+
+        // Draw the Goal
+        g.setColor(Color.RED);
+        g.fillOval(maze.getStartNode().getPosy()*boxWidth, maze.getStartNode().getPosx()*boxHeight,boxWidth, boxHeight);
+
+        // Draw Start
+        g.setColor(Color.BLACK);
+        g.fillOval(maze.getGoalNode().getPosy()*boxWidth, maze.getGoalNode().getPosx()*boxHeight,boxWidth, boxHeight);
 
     }
 }

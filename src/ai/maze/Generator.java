@@ -123,6 +123,7 @@ public class Generator {
 
         displayDoors();
         displayKeys();
+        displayStartEnd();
 
 
         return getMaze();
@@ -149,7 +150,6 @@ public class Generator {
                 if (mazeMultiData[i][j][4] != 0) {
                     keyPosition.put(mazeMultiData[i][j][4], nodeStrcture[i][j]);
                 }
-
             }
         }
 
@@ -213,8 +213,9 @@ public class Generator {
      * Define start position (default at 0:0)
      */
     private void defineStartPosition() {
-        mazeStartPosition = new Position(0,0);
-        mazeStartNode = nodeStrcture[0][0];
+        Random rdm = new Random();
+        mazeStartPosition = new Position(rdm.nextInt(sizex-1),rdm.nextInt(sizey-1));
+        mazeStartNode = nodeStrcture[mazeStartPosition.getX()][mazeStartPosition.getY()];
     }
 
     /**
@@ -545,6 +546,7 @@ public class Generator {
         } while(mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][2] == section.getId());
 
         mazeMultiData[walker.getPosx()][walker.getPosy()][4] = i;
+        nodeStrcture[walker.getPosx()][walker.getPosy()].setHasKey(i);
 
     }
 
@@ -660,6 +662,14 @@ public class Generator {
             }
             System.out.println("");
         }
+        System.out.println("");
+    }
+
+    private void displayStartEnd() {
+        System.out.println("START & END");
+
+        System.out.println("Start : " + mazeStartPosition.getX() + ":" + mazeStartPosition.getY());
+        System.out.println("Goal  : " + mazeGoalPosition.getX() + ":" + mazeGoalPosition.getY());
         System.out.println("");
     }
 }

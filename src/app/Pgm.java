@@ -22,7 +22,7 @@ public class Pgm {
 		Log.logInfo("Program started all good");
 
 
-		Generator g = new Generator(7, 7, 2);
+		Generator g = new Generator(11, 11, 4);
 		MazeDTO m = g.generate();
 
 		// Show Maze Frame
