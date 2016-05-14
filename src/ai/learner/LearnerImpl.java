@@ -2,10 +2,12 @@ package ai.learner;
 
 import ai.solver.Solver;
 import ai.solver.SolverImpl;
+import bizz.BizzFactory;
 import constant.RunningMode;
 import constant.RunningStatus;
 import model.GlobalLearningModel;
 import model.MazeLearningModel;
+import ucc.GoalDTO;
 
 /**
  * Created by jvdur on 13/05/2016.
@@ -28,8 +30,12 @@ public class LearnerImpl extends LearnerRunner {
 
             // Create a new Model (withe a maze)
             mlm = new MazeLearningModel(glm);
+
+            // Get the goals
+            GoalDTO goals = getNextGoalLoad();
+
             // Instanciate a solver
-            Solver s = new SolverImpl(mlm.getMazeNinja());
+            Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
             // Learn from maze
             learnMaze(mlm, s);
 
@@ -56,6 +62,13 @@ public class LearnerImpl extends LearnerRunner {
 
         }
 
+    }
+
+    private GoalDTO getNextGoalLoad() {
+
+        // TODO get the next try of goal load to optimize. Data can be reached in MLM
+
+        return BizzFactory.INSTANCE.createGoal(1, 3, 5, 10, -1);
     }
 
     @Override

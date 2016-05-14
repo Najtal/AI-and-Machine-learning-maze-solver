@@ -52,4 +52,9 @@ public class BizzFactoryImpl implements BizzFactory {
     public Node createNode(int posx, int posy) {
         return new NodeImpl(posx, posy);
     }
+
+    @Override
+    public GoalLoad createGoal(int loadDiscoverPath, int loadGrabKey, int loadOpenDoor, int loadReachGoal, int loadAaction) {
+        return new GoalLoadImpl(loadDiscoverPath, loadGrabKey, loadOpenDoor, loadReachGoal, loadAaction);
+    }
 }

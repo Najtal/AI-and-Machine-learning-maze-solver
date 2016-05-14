@@ -58,5 +58,15 @@ public interface BizzFactory {
      */
 	Node createNode(final int posx, final int posy);
 
+	/**
+	 * Create a new Goal Load
+	 * @param loadDiscoverPath
+	 * @param loadGrabKey
+	 * @param loadOpenDoor
+	 * @param loadReachGoal
+	 * @param loadAaction
+     * @return
+     */
+	GoalLoad createGoal(int loadDiscoverPath, int loadGrabKey, int loadOpenDoor, int loadReachGoal, int loadAaction);
 
 }

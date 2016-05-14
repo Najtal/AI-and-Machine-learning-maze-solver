@@ -1,5 +1,6 @@
 package ai.solver;
 
+import ucc.GoalDTO;
 import ucc.MazeDTO;
 
 /**
@@ -11,7 +12,7 @@ public class SolverImpl implements Solver {
      *
      * @param maze
      */
-    public SolverImpl(MazeDTO maze) {
+    public SolverImpl(MazeDTO maze, GoalDTO goals) {
 
         /**
          * The MazeDTO received only contains the
