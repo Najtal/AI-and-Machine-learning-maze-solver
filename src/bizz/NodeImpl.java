@@ -103,7 +103,12 @@ public class NodeImpl extends BizzObjectImpl implements Node {
     public boolean isDoorOpen() {
         return isDoorOpen;
     }
+    
+    public boolean isGoal() {
+        return this.isGoal;
+    }
 
+    
     /*
      * SETTERS
      */
