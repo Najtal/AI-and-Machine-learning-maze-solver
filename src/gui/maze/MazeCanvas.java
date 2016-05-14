@@ -1,4 +1,4 @@
-package gui.swing;
+package gui.maze;
 
 import ucc.MazeDTO;
 import ucc.NodeDTO;

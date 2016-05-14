@@ -88,4 +88,12 @@ public class GlobalLearningModel {
     public LearnerRunner getRunningThread() {
         return runningThread;
     }
+
+    public void setrMode(RunningMode rMode) {
+        this.rMode = rMode;
+    }
+
+    public void setrStatus(RunningStatus rStatus) {
+        this.rStatus = rStatus;
+    }
 }

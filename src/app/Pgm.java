@@ -1,12 +1,10 @@
 package app;
 
-import ai.learner.LearnerImpl;
-import ai.learner.LearnerRunner;
-import constant.RunningMode;
-import gui.swing.MazeFrame;
-import model.GlobalLearningModel;
-import util.Log;
-
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 
 /**
@@ -14,33 +12,23 @@ import util.Log;
  * @author Jean-Vital Durieu
  * @version 0.01
  */
-public class Pgm {
-
-	/**
-	 * Constructeur. Crée le modele et la vue, par défaut sur la page de connection
-	 */
-	public Pgm() {
-
-		Log.logInfo("Program started all good");
+public class Pgm extends Application {
 
 
-		// Create and Init a Global learning model
-		GlobalLearningModel glm = new GlobalLearningModel(3, 2, 20, 20, 20, 20, 7, 7, RunningMode.FULL_SPEED);
-
-		// Create a Learner and give it the context (the GlobalLearningModel)
-		LearnerRunner lr = new LearnerImpl(glm);
-
-		// Show mazes
-		new MazeFrame(glm.getRunningThread().getMazeLearningModel().getMazeNinja(), "maze", false);
-		new MazeFrame(glm.getRunningThread().getMazeLearningModel().getMazeOmniscient(), "maze", true);
-
-		// Run it !
-		lr.run();
-
-
-
-
-
+	@Override
+	public void start(Stage primaryStage) throws Exception{
+		Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+		primaryStage.setTitle(AppContext.INSTANCE.getProperty("guiTitleMain"));
+		primaryStage.setScene(new Scene(root, 1050, 600));
+		primaryStage.setResizable(false);
+		//primaryStage.setOnCloseRequest();
+		// TODO : handle window close request
+		primaryStage.show();
 	}
+
+	public static void create() {
+		launch(null);
+	}
+
 
 }
