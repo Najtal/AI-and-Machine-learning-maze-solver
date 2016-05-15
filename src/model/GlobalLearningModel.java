@@ -23,6 +23,8 @@ public class GlobalLearningModel {
     private RunningStatus rStatus;
 
     private LearnerRunner runningThread;
+    private boolean done;
+    private int autoRunningSpeed;
 
     public GlobalLearningModel(int nbMaze, int nbIterationPerMaze,
                                 int mXmin, int mYmin, int mXmax, int mYmax,
@@ -40,7 +42,13 @@ public class GlobalLearningModel {
         runningThread = new LearnerImpl(this);
     }
 
+
+    public void createLearner() {
+        runningThread = new LearnerImpl(this);
+    }
+
     public void start() {
+        rStatus = RunningStatus.RUNNING;
         runningThread.run();
     }
 
@@ -95,5 +103,21 @@ public class GlobalLearningModel {
 
     public void setrStatus(RunningStatus rStatus) {
         this.rStatus = rStatus;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean isDone) {
+        this.done = done;
+    }
+
+    public int getAutoRunningSpeed() {
+        return autoRunningSpeed;
+    }
+
+    public void setAutoRunningSpeed(int autoRunningSpeed) {
+        this.autoRunningSpeed = autoRunningSpeed;
     }
 }

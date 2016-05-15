@@ -140,8 +140,8 @@
                                  </font></Label>
                               <Button id="ExStart" layoutX="114.0" layoutY="363.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="297.0" text="Start" textAlignment="RIGHT" textFill="#3abf20" onAction="#butStart"/>
                               <Label layoutX="553.0" layoutY="61.0" text="Open detail windows" />
-                              <Button id="ExOmnimaze" disable="true" layoutX="622.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Omniscient maze" textAlignment="RIGHT" onAction="#butOmniscient"/>
-                              <Button id="ExSolvermaze" disable="true" layoutX="622.0" layoutY="223.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="326.0" text="Solver maze" textAlignment="RIGHT" onAction="#butExSolver"/>
+                              <Button id="ExOmnimaze" disable="false" layoutX="622.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Omniscient maze" textAlignment="RIGHT" onAction="#butOmniscient"/>
+                              <Button id="ExSolvermaze" disable="false" layoutX="622.0" layoutY="223.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="326.0" text="Solver maze" textAlignment="RIGHT" onAction="#butExSolver"/>
                               <Button id="ExData" disable="true" layoutX="623.0" layoutY="309.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="325.0" text="Data analytics" textAlignment="RIGHT" onAction="#butExData"/>
                            </children>
                         </AnchorPane>

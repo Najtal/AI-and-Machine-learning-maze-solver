@@ -27,8 +27,9 @@ public class MazeUCCImpl implements MazeUCC {
     private MazeUCCImpl() {
     }
 
-    @Override
-    public MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze) {
+
+    public static MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze) {
+        // TODO should not be static !
         MazeDTO mNinja = BizzFactory.INSTANCE.createNinjaMaze(maze.getStartNode(), maze.getSizex(), maze.getSizey());
         mNinja.setDoorPosition(new HashMap<Integer, NodeDTO>());
         mNinja.setKeyPosition(new HashMap<Integer, NodeDTO>());

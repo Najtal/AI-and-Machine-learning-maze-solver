@@ -36,6 +36,7 @@ public class LearnerImpl extends LearnerRunner {
 
             // Instanciate a solver
             Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
+
             // Learn from maze
             learnMaze(mlm, s);
 
@@ -47,20 +48,32 @@ public class LearnerImpl extends LearnerRunner {
 
     private void learnMaze(MazeLearningModel mlm, Solver s) {
 
-        while(glm.getrStatus() == RunningStatus.RUNNING
-                && ( glm.getrMode() == RunningMode.FULL_SPEED
-                || glm.getrMode() == RunningMode.MAZE_BY_MAZE
-                || mlm.isGoForNextStep())) {
+        while (!glm.isDone()) {
+            while(glm.getrStatus() == RunningStatus.RUNNING
+                    && (glm.getrMode() != RunningMode.STEP_BY_STEP_MANUAL
+                        || mlm.isGoForNextStep())) {
 
-            // TODO : must call solver over here
 
-            s.doOneStep();
+                if (glm.getrMode() == RunningMode.STEP_BY_STEP_AUTO) {
+                    try {
+                        Thread.sleep(350);
+                        //Thread.sleep(glm.getAutoRunningSpeed());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-            if (s.isSolved()) {
-                return;
+                System.out.print("Next step: ");
+                s.doOneStep();
+                System.out.println("done !");
+
+                if (s.isSolved()) {
+                    glm.setDone(true);
+                }
+
             }
-
         }
+
 
     }
 

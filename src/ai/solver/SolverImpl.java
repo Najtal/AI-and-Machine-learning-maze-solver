@@ -1,12 +1,13 @@
 package ai.solver;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import bizz.Node;
 import constant.NodeCondition;
+import ucc.GoalDTO;
 import ucc.MazeDTO;
 import ucc.NodeDTO;
-import bizz.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jvdur on 13/05/2016.
@@ -51,7 +52,7 @@ public class SolverImpl implements Solver {
      *
      * @param maze
      */
-    public SolverImpl(MazeDTO maze) {
+    public SolverImpl(MazeDTO maze, GoalDTO goals) {
 
         /**
          * The MazeDTO received only contains the
@@ -59,6 +60,13 @@ public class SolverImpl implements Solver {
          *          maze.getSizex()
          *          maze.getSizey()
          */
+
+		this.new_rwd = goals.getLoadDiscoverPath();
+		this.door_rwd = goals.getLoadOpenDoor();
+		this.key_rwd = goals.getLoadGrabKey();
+
+		this.gamma = 1;
+		this.visited = new ArrayList<NodeDTO>();
 
     }
 
@@ -157,8 +165,6 @@ public class SolverImpl implements Solver {
     	}
     	throw new Exception();
     }
-
-    
     
     //Find the best direction 
     private List<Number> bestNeighbour(List<NodeDTO> ngbs, int nsteps, double reward) throws Exception{

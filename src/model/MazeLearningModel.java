@@ -5,7 +5,7 @@ import app.AppContext;
 import exception.FatalException;
 import exception.MazeException;
 import ucc.MazeDTO;
-import ucc.MazeUCC;
+import ucc.MazeUCCImpl;
 import util.Log;
 
 import java.util.Random;
@@ -53,9 +53,7 @@ public class MazeLearningModel {
             break;
         }
 
-
-
-        mazeNinja = MazeUCC.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
+        mazeNinja = MazeUCCImpl.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
     }
 
 

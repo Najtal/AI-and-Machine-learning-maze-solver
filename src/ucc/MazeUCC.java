@@ -4,6 +4,6 @@ public interface MazeUCC {
 
 	MazeUCC INSTANCE = MazeUCCImpl.getInstance();
 
-	MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze);
+	//static MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze);
 
 }
