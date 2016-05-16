@@ -2,8 +2,6 @@ package ai.solver;
 
 import ai.maze.Generator;
 import bizz.GoalLoadImpl;
-import bizz.MazeImpl;
-import bizz.Node;
 import constant.NodeCondition;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
@@ -26,10 +24,11 @@ public class SolverImpl implements Solver {
 	private double new_rwd;
 	private double door_rwd;
 	private double key_rwd;
+	private double goal_rwd;
 	private double gamma;
 	private Set<NodeDTO> visited;
 	private int treshold;
-	
+
 	/*
 	 * GETTERS
 	 */
@@ -96,10 +95,11 @@ public class SolverImpl implements Solver {
 		this.new_rwd = goals.getLoadDiscoverPath();
 		this.door_rwd = goals.getLoadOpenDoor();
 		this.key_rwd = goals.getLoadGrabKey();
+		this.key_rwd = goals.getLoadReachGoal();
 
 		this.gamma = 1;
 		this.visited = new HashSet<NodeDTO>();
-		this.treshold = maze.getSizex()*maze.getSizey();
+		this.treshold = 5;//maze.getSizex()*maze.getSizey();
 		this.pos = maze.getStartNode();
     }
 
@@ -124,6 +124,9 @@ public class SolverImpl implements Solver {
     	}
     	if (visited.contains(node)==false){
     		visited.add(node);
+    		if (node.isGoal()){
+    			return reward + goal_rwd*Math.pow(gamma,nsteps);
+    		}
     		if (node.getIsDoor()==0){
     			return reward + new_rwd*Math.pow(gamma,nsteps);
     		}else{
@@ -136,38 +139,84 @@ public class SolverImpl implements Solver {
     				|| (this.key!=0 && node.getHasKey()!=0)){
     			// Move in the best direction
     			List<NodeDTO> ngbs = node.getNeighbours();
-    			List<Number> l = bestNeighbour(ngbs, nsteps, reward);
-    			double max = ((double) l.get(1));
-    			int best_ngb = ((int) l.get(0));
-				move(ngbs.get(best_ngb));
+    			System.out.print("ngbs  at (" 
+							+ this.pos.getPosx() + "," + this.pos.getPosy() 
+							+ "): " + ngbs.size() + "\n");
+    			
+    			//List<Number> l = bestNeighbour(ngbs, nsteps, reward);
+    	    	double max = bestMove(ngbs.get(0), nsteps+1, reward);
+    			int best_ngb = 0;
+    			for (int i = 1; i < ngbs.size() ; i++){
+    				// Only if we can move to the neighbour
+    				if (ngbs.get(i).getCondition() == NodeCondition.NONE
+    						|| ngbs.get(i).getIsDoor() == this.key){				
+    					double r = bestMove(ngbs.get(i), nsteps+1, reward);
+    					if (r > max){
+    						max = r;
+    						best_ngb = i;
+    					}
+    				}
+    			}
+
+    			move(ngbs.get(best_ngb));
 				return max;
     		}
     		
     		if (this.key==0 && node.getHasKey()!=0){
     			// Move in the best direction with or without taking the key
     			List<NodeDTO> ngbs = node.getNeighbours();
+    			//System.out.print("ngbs : " + ngbs.size() + "\n");
     			
     			// Without the key
-    			List<Number> l = bestNeighbour(ngbs, nsteps, reward);
-    			double max = ((double) l.get(1));
-    			int best_ngb = ((int) l.get(0));
+    			//List<Number> l = bestNeighbour(ngbs, nsteps, reward);
+    	    	double max = bestMove(ngbs.get(0), nsteps+1, reward);
+    			int best_ngb = 0;
+    			for (int i = 1; i < ngbs.size() ; i++){
+    				// Only if we can move to the neighbour
+    				if (ngbs.get(i).getCondition() == NodeCondition.NONE
+    						|| ngbs.get(i).getIsDoor() == this.key){				
+    					double r = bestMove(ngbs.get(i), nsteps+1, reward);
+    					if (r > max){
+    						max = r;
+    						best_ngb = i;
+    					}
+    				}
+    			}
     			
     			//With the key
-    			System.out.print("do we have a key at (" 
-							+ this.pos.getPosx() + "," + this.pos.getPosy() 
-							+ ") ? "+this.key + "\n");
-    			System.out.print("is there a key at (" 
-							+ this.pos.getPosx() + "," + this.pos.getPosy() 
-							+ ") ? "+node.getHasKey() + "\n");
-    			takeKey();
+    			//System.out.print("a) do we have a key at (" 
+				//			+ this.pos.getPosx() + "," + this.pos.getPosy() 
+				//			+ ") ? "+this.key + "\n");
+    			//System.out.print("b) is there a key to take at (" 
+				//			+ this.pos.getPosx() + "," + this.pos.getPosy() 
+				//			+ ") ? "+node.getHasKey() + "\n");
+
+    			//takeKey();
+    			this.pos.setHasKey(0);
+    			this.key = this.pos.getHasKey();
+    			
     			double new_reward = reward+key_rwd*Math.pow(gamma, nsteps);
-    			List<Number> l2 = bestNeighbour(ngbs, nsteps+1, new_reward);
-    			double max2 = ((double) l2.get(1));
-    			int best_ngb2 = ((int) l2.get(0));
+    			
+    			//List<Number> l2 = bestNeighbour(ngbs, nsteps+1, new_reward);
+    	    	double max2 = bestMove(ngbs.get(0), nsteps+2, new_reward);
+    			int best_ngb2 = 0;
+    			for (int i = 1; i < ngbs.size() ; i++){
+    				// Only if we can move to the neighbour
+    				if (ngbs.get(i).getCondition() == NodeCondition.NONE
+    						|| ngbs.get(i).getIsDoor() == this.key){				
+    					double r = bestMove(ngbs.get(i), nsteps+2, new_reward);
+    					if (r > max2){
+    						max2 = r;
+    						best_ngb2 = i;
+    					}
+    				}
+    			}
     			
     			//Is it better to take the key ? 
     			if (max > max2){
-    				dropKey();
+    				//dropKey();
+    				this.pos.setHasKey(this.key);
+    				this.key = 0;
     				move(ngbs.get(best_ngb));
     				return max;
     			}else{
@@ -179,27 +228,56 @@ public class SolverImpl implements Solver {
     		else if (node.getHasKey()==0 && this.key != 0){
     			// Move in the best direction with or without dropping the key
     			List<NodeDTO> ngbs = node.getNeighbours();
+    			//System.out.print("ngbs : " + ngbs.size() + "\n");
 
     			// Keeping the key
-    			List<Number> l = bestNeighbour(ngbs, nsteps, reward);
-    			double max = ((double) l.get(1));
-    			int best_ngb = ((int) l.get(0));
+    			//List<Number> l = bestNeighbour(ngbs, nsteps, reward);
+    	    	double max = bestMove(ngbs.get(0), nsteps+1, reward);
+    			int best_ngb = 0;
+    			for (int i = 1; i < ngbs.size() ; i++){
+    				// Only if we can move to the neighbour
+    				if (ngbs.get(i).getCondition() == NodeCondition.NONE
+    						|| ngbs.get(i).getIsDoor() == this.key){				
+    					double r = bestMove(ngbs.get(i), nsteps+1, reward);
+    					if (r > max){
+    						max = r;
+    						best_ngb = i;
+    					}
+    				}
+    			}
     			
     			// Dropping the key
-    			System.out.print("do we have a key at (" 
-							+ this.pos.getPosx() + "," + this.pos.getPosy() 
-							+ ") ? "+this.key + "\n");
-    			System.out.print("is there a key at (" 
-							+ this.pos.getPosx() + "," + this.pos.getPosy() 
-							+ ") ? "+node.getHasKey() + "\n");
-    			dropKey();
-    			List<Number> l2 = bestNeighbour(ngbs, nsteps+1, reward);
-    			double max2 = ((double) l2.get(1));
-    			int best_ngb2 = ((int) l2.get(0));
+    			//System.out.print("a) do we have a key to drop at (" 
+				//			+ this.pos.getPosx() + "," + this.pos.getPosy() 
+				//			+ ") ? "+this.key + "\n");
+    			//System.out.print("b) is there a key at (" 
+				//			+ this.pos.getPosx() + "," + this.pos.getPosy() 
+				//			+ ") ? "+node.getHasKey() + "\n");
+
+    			//dropKey();
+    			this.pos.setHasKey(this.key);
+    			this.key = 0;
+    			
+    			//List<Number> l2 = bestNeighbour(ngbs, nsteps+1, reward);
+    	    	double max2 = bestMove(ngbs.get(0), nsteps+2, reward);
+    			int best_ngb2 = 0;
+    			for (int i = 1; i < ngbs.size() ; i++){
+    				// Only if we can move to the neighbour
+    				if (ngbs.get(i).getCondition() == NodeCondition.NONE
+    						|| ngbs.get(i).getIsDoor() == this.key){				
+    					double r = bestMove(ngbs.get(i), nsteps+2, reward);
+    					if (r > max2){
+    						max2 = r;
+    						best_ngb2 = i;
+    					}
+    				}
+    			}
 
     			// Is it better to drop the key ?
     			if (max > max2){
-    				takeKey();
+    				//takeKey();
+        			this.pos.setHasKey(0);
+        			this.key = this.pos.getHasKey();
     				move(ngbs.get(best_ngb));
     				return max;
     			}else{
@@ -216,9 +294,6 @@ public class SolverImpl implements Solver {
     
     //Find the best direction 
     private List<Number> bestNeighbour(List<NodeDTO> ngbs, int nsteps, double reward) throws NoKeyException{
-    	if (ngbs.isEmpty()){
-    		System.out.print("pas de voisins");
-    	}else {
     	double max = bestMove(ngbs.get(0), nsteps+1, reward);
 		int best_ngb = 0;
 		for (int i = 1; i < ngbs.size() ; i++){
@@ -232,9 +307,6 @@ public class SolverImpl implements Solver {
 				}
 			}
 		}
-    	}
-		int best_ngb = 0;
-		double max = 0;
 		List<Number> result = new ArrayList<Number>();
 		result.add(best_ngb);
 		result.add(max);
@@ -248,19 +320,16 @@ public class SolverImpl implements Solver {
     public static void main(String args[]) {
     	Generator gen = new Generator(7,7,2);
         MazeDTO maze = gen.generate();
-        GoalDTO goals = new GoalLoadImpl(1, 2, 3, 4, 5); 
+        GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1); 
         SolverImpl s = new SolverImpl(maze, goals);
-        maze.toString();
-        System.out.print("\n position : (" + s.getPosition().getPosx() + ","
-        		+ s.getPosition().getPosy() + ")\n");
-        System.out.print("key : " + s.getKey() + "\n");
-        System.out.print("voisins : " + s.getPosition().getNeighbours() + "\n");
-        for (int i = 0; i < 3; i++){
+        
+        for (int i = 0; i < 10; i++){
         	s.doOneStep();
+        
         	System.out.print("position : (" + s.getPosition().getPosx() + ","
         		+ s.getPosition().getPosy() + ")\n");
             System.out.print("key : " + s.getKey() + "\n");
-            System.out.print("voisins : " + s.getPosition().getNeighbours() + "\n");
+            System.out.print("voisins : " + s.getPosition().getNeighbours().size() + "\n");
         }
     }
 
