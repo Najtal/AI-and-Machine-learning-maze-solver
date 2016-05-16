@@ -27,6 +27,8 @@ public interface NodeDTO {
     Map<NodeDTO, NodeCondition> getNeighboursHasCondition();
 
     boolean isDoorOpen();
+    
+    boolean isGoal();
 
     /*
      * SETTERS

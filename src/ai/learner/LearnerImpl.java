@@ -28,7 +28,7 @@ public class LearnerImpl extends LearnerRunner {
         // For the # of maze we have to solve
         for(int i=0; i<glm.getNbMaze(); i++) {
 
-            // Create a new Model (withe a maze)
+            // Create a new Model (with a maze)
             mlm = new MazeLearningModel(glm);
 
             // Get the goals
