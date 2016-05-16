@@ -26,7 +26,7 @@ public class SolverImpl implements Solver {
 	private double key_rwd;
 	private double goal_rwd;
 	private double gamma;
-	private Set<NodeDTO> visited;
+	private boolean[][] visited;
 	private int treshold;
 
 	/*
@@ -98,8 +98,13 @@ public class SolverImpl implements Solver {
 		this.key_rwd = goals.getLoadReachGoal();
 
 		this.gamma = 1;
-		this.visited = new HashSet<NodeDTO>();
-		this.treshold = 5;//maze.getSizex()*maze.getSizey();
+		this.visited = new boolean[maze.getSizex()][maze.getSizey()];
+		for (int i = 0; i < maze.getSizex(); i++){
+			for (int j = 0; j < maze.getSizey(); j++){
+				visited[i][j] = false;
+			}
+		}
+		this.treshold = maze.getSizex()*maze.getSizey();
 		this.pos = maze.getStartNode();
     }
 
@@ -122,8 +127,8 @@ public class SolverImpl implements Solver {
     	if (nsteps > this.treshold){
     		return reward;
     	}
-    	if (visited.contains(node)==false){
-    		visited.add(node);
+    	if (visited[node.getPosx()][node.getPosy()]==false){
+    		visited[node.getPosx()][node.getPosy()]=true;
     		if (node.isGoal()){
     			return reward + goal_rwd*Math.pow(gamma,nsteps);
     		}
@@ -139,12 +144,18 @@ public class SolverImpl implements Solver {
     				|| (this.key!=0 && node.getHasKey()!=0)){
     			// Move in the best direction
     			List<NodeDTO> ngbs = node.getNeighbours();
-    			System.out.print("ngbs  at (" 
-							+ this.pos.getPosx() + "," + this.pos.getPosy() 
-							+ "): " + ngbs.size() + "\n");
+    			//System.out.print("ngbs of node "+ node +" at (" 
+				//			+ this.pos.getPosx() + "," + this.pos.getPosy() 
+				//			+ "): " + ngbs.size() + "\n");
     			
     			//List<Number> l = bestNeighbour(ngbs, nsteps, reward);
-    	    	double max = bestMove(ngbs.get(0), nsteps+1, reward);
+    			double max ;
+    			try {
+    	    	max = bestMove(ngbs.get(0), nsteps+1, reward);
+    			}catch (Exception e){
+    				System.out.print(ngbs.size());
+    				throw e;
+    			}
     			int best_ngb = 0;
     			for (int i = 1; i < ngbs.size() ; i++){
     				// Only if we can move to the neighbour
@@ -225,7 +236,7 @@ public class SolverImpl implements Solver {
     			}
     		}
     		
-    		else if (node.getHasKey()==0 && this.key != 0){
+    		else {//if (node.getHasKey()==0 && this.key != 0){
     			// Move in the best direction with or without dropping the key
     			List<NodeDTO> ngbs = node.getNeighbours();
     			//System.out.print("ngbs : " + ngbs.size() + "\n");
@@ -285,10 +296,6 @@ public class SolverImpl implements Solver {
     				return max2;
     			}	
     		}
-    		else {
-    			System.out.print("ne devrait pas arriver");
-    			return 0;
-    		}
 		}
 	}
     
@@ -318,12 +325,18 @@ public class SolverImpl implements Solver {
      * @param args
      */
     public static void main(String args[]) {
-    	Generator gen = new Generator(7,7,2);
+    	Generator gen = new Generator(3,3,0);
         MazeDTO maze = gen.generate();
-        GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1); 
+        GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
+        System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
+        System.out.print("key :" + goals.getLoadGrabKey() + "\n");
+        System.out.print("door :" + goals.getLoadOpenDoor() + "\n");
+        System.out.print("goal :" + goals.getLoadReachGoal() + "\n");
         SolverImpl s = new SolverImpl(maze, goals);
         
-        for (int i = 0; i < 10; i++){
+        int i = 0;
+        while (s.isSolved() == false && i<10){
+        	i++;
         	s.doOneStep();
         
         	System.out.print("position : (" + s.getPosition().getPosx() + ","
