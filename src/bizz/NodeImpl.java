@@ -20,6 +20,7 @@ public class NodeImpl extends BizzObjectImpl implements Node {
 	private int hasKey; // If < 1 means has no key. Otherwise, key number
     private boolean isGoal;
 	private List<NodeDTO> neighbours;
+	private List<NodeDTO> usefulNeighbours;
 	private Map<NodeDTO, NodeCondition> neighboursHasCondition;
 
 
@@ -40,6 +41,7 @@ public class NodeImpl extends BizzObjectImpl implements Node {
         this.isDoor = isDoor;
         this.hasKey = hasKey;
         this.neighbours = neighbours;
+        this.usefulNeighbours = neighbours;
         this.neighboursHasCondition = neighboursHasCondition;
 	}
 
@@ -55,6 +57,7 @@ public class NodeImpl extends BizzObjectImpl implements Node {
         this.isDoor = 0;
         this.hasKey = 0;
         this.neighbours = new ArrayList<>();
+        this.usefulNeighbours = new ArrayList<>();
         this.neighboursHasCondition = new HashMap<>();
     }
 
@@ -95,6 +98,11 @@ public class NodeImpl extends BizzObjectImpl implements Node {
     }
 
     @Override
+    public List<NodeDTO> getUsefulNeighbours() {
+        return usefulNeighbours;
+    }
+
+    @Override
     public Map<NodeDTO, NodeCondition> getNeighboursHasCondition() {
         return neighboursHasCondition;
     }
@@ -130,6 +138,21 @@ public class NodeImpl extends BizzObjectImpl implements Node {
 
     public void setIsDoor(int isDoor) {
         this.isDoor = isDoor;
+    }
+
+    @Override
+    public void setUsefulNeighbour(List<NodeDTO> neighbours) {
+        this.usefulNeighbours = new ArrayList<NodeDTO>(neighbours);
+    }
+    @Override
+    public void removeUsefulNeighbour(NodeDTO neighbour) {
+        this.usefulNeighbours.remove(neighbour);
+    }
+    
+    
+    @Override
+    public String toString(){
+    	return "("+this.posx+","+this.posy+")";
     }
 
 }

@@ -8,7 +8,9 @@ import ucc.MazeDTO;
 import ucc.NodeDTO;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -18,12 +20,13 @@ public class SolverImpl implements Solver {
 
 	private NodeDTO pos;
 	private int key;
-	private double new_rwd;
-	private double door_rwd;
-	private double key_rwd;
-	private double goal_rwd;
-	private double gamma;
-	private int treshold;
+	private final double new_rwd;
+	private final double door_rwd;
+	private final double key_rwd;
+	private final double goal_rwd;
+	private final double gamma;
+	private final int treshold;
+	private Set<NodeDTO> nodesWithKey;
 
 	/*
 	 * GETTERS
@@ -60,6 +63,8 @@ public class SolverImpl implements Solver {
 		this.pos = maze.getStartNode();
 		
 		this.pos.setUsefulNeighbour(this.pos.getNeighbours());
+		
+		this.nodesWithKey = new HashSet<NodeDTO>(); 
     }
 
     @Override
@@ -91,23 +96,24 @@ public class SolverImpl implements Solver {
     }
     
     
-    private MyResult bestMove(NodeDTO node, int nsteps, double reward, List<Action> path) throws Exception{
+    private MyResult bestMove(NodeDTO node, int cpt, double reward, List<Action> path) throws Exception{
+//    	System.out.print("bestMove("+node+","+cpt+","+reward+","+path+"), keys at "+nodesWithKey+"\n");
     	List<Action> new_path = new ArrayList<Action>(path);
     	new_path.add(new Move(node));
     	
-    	if (nsteps > this.treshold){
+    	if (path.size() > this.treshold){
     		return new MyResult(reward, new_path);
     	}
     	
     	if (node.getUsefulNeighbours().isEmpty()) {
     		if (node.isGoal()){
-    			return new MyResult(reward + goal_rwd*Math.pow(gamma,nsteps), new_path);
+    			return new MyResult(reward + goal_rwd*Math.pow(gamma,path.size()), new_path);
     		}
     		if (node.getIsDoor()==0){
-    			return new MyResult(reward + new_rwd*Math.pow(gamma,nsteps), new_path);
+    			return new MyResult(reward + new_rwd*Math.pow(gamma,path.size()), new_path);
     		}
     		else{
-    			return new MyResult(reward + door_rwd*Math.pow(gamma,nsteps), new_path);
+    			return new MyResult(reward + door_rwd*Math.pow(gamma,path.size()), new_path);
     		}
     	}
     	
@@ -119,26 +125,62 @@ public class SolverImpl implements Solver {
 
 			//Remove dead-ends of possible ways
 			if (node.getUsefulNeighbours().size() == 1){
-				node.getUsefulNeighbours().get(0).removeUsefulNeighbour(node);
+				NodeDTO ngb = node.getUsefulNeighbours().get(0);
+//				System.out.print(node+" is a DEAD_END for "+ngb+"\n");
+				ngb.removeUsefulNeighbour(node);
 			}
 			
-			// WITHOUT ANY KEY
+			// WITHOUT ANY KEY ACTION
 			if ((this.key==0 && node.getHasKey()==0)
 					|| (this.key!=0 && node.getHasKey()!=0)){
+				
+				if (node.getHasKey()!=0){
+					nodesWithKey.add(node);
+				}
+				
 				// Move in the best direction
-
+				
 				double max = 0;
 				List<Action> best_path = new ArrayList<Action>();
+
+				boolean door = false;
+
+				//iterate on neighbours and not on usefulNeighbour 
+				//because usefulNeighbours can change during the iteration 
 				for (int i = 0; i < neighbours.size() ; i++){
 					// Only if we can move to the neighbour
-					if (node.getUsefulNeighbours().contains(neighbours.get(i))
-							&& (neighbours.get(i).getCondition() == NodeCondition.NONE
-							|| neighbours.get(i).getIsDoor() == this.key)){
-						MyResult res = bestMove(neighbours.get(i), nsteps+1, reward, new_path);
-						double r = res.getReward();
-						if (r > max){
-							max = r;
-							best_path = res.getPath();
+					if (node.getUsefulNeighbours().contains(neighbours.get(i))) {
+						if (neighbours.get(i).getCondition() == NodeCondition.NEED_KEY){
+							door = true;
+						}
+						if (neighbours.get(i).getCondition() == NodeCondition.NONE
+							|| neighbours.get(i).getIsDoor() == this.key){
+							MyResult res = bestMove(neighbours.get(i), cpt+1, reward, new_path);
+							double r = res.getReward();
+							if (r > max){
+								max = r;
+								best_path = res.getPath();
+							}
+						}
+					}
+				}
+				if (door){
+					Set<NodeDTO> nwk = new HashSet<NodeDTO>(nodesWithKey); 
+					for (NodeDTO n : nwk){
+						if (n.equals(node) == false && node.getNeighbours().contains(n)==false){
+							new_path.add(new Move(n));
+							new_path.add(KeyAction.TAKE_KEY);
+							this.key = n.getHasKey();
+							n.setHasKey(0);
+							nodesWithKey.remove(n);
+							new_path.add(new Move(node));
+							//TODO adjust reward and path
+							MyResult res = bestMove(node, cpt+1, reward, new_path);
+							double r = res.getReward();
+							if (r > max){
+								max = r;
+								best_path = res.getPath();
+							}
 						}
 					}
 				}
@@ -147,13 +189,13 @@ public class SolverImpl implements Solver {
 			}
 			
 			
-			// WITH KEY ON THE FLOOR
+			// WITH KEY 
 			else {
-		    	System.out.print("\n"+nsteps+ " steps (key = "+this.key+"), "
-		    			+"node at ("+node.getPosx()+","+node.getPosy()+"), ("+node.getNeighbours().size()+" ngbs), "
-		    			+"(key = "+node.getHasKey()+") path : "+path+"\n");
 
+				// WITH KEY ON THE FLOOR
 				if (this.key==0 && node.getHasKey()!=0){
+//					System.out.print("KEY "+ node.getHasKey()+" ON THE FLOOR\n");
+					nodesWithKey.add(node);
 					// Move in the best direction with or without taking the key
 					    			
 					// Without the key
@@ -165,26 +207,26 @@ public class SolverImpl implements Solver {
 						if (node.getUsefulNeighbours().contains(neighbours.get(i))
 								&& (neighbours.get(i).getCondition() == NodeCondition.NONE
 								|| neighbours.get(i).getIsDoor() == this.key)){				
-							MyResult res = bestMove(neighbours.get(i), nsteps+1, reward, new_path);
+							MyResult res = bestMove(neighbours.get(i), cpt+1, reward, new_path);
 							double r = res.getReward();
 							if (r > max){
 								max = r;
 								best_path = res.getPath();
 							}
 						}
-					}
-	
+					}	
 					
 					//With the key
 	
 					//takeKey();
 					int k = node.getHasKey();
-					System.out.print("TAKE KEY "+k+" (step "+nsteps+")\n");
+//					System.out.print("TAKE KEY "+k+" (iteration "+cpt+")\n");
 					node.setHasKey(0);
 					this.key = k;
+					nodesWithKey.remove(node);
 					new_path.add(KeyAction.TAKE_KEY);
 					
-					double new_reward = reward+key_rwd*Math.pow(gamma, nsteps);
+					double new_reward = reward+key_rwd*Math.pow(gamma, path.size());
 					
 					double max2 = 0;
 					List<Action> best_path2 = new ArrayList<Action>();
@@ -193,7 +235,7 @@ public class SolverImpl implements Solver {
 						if (node.getUsefulNeighbours().contains(neighbours.get(i))
 								&& (neighbours.get(i).getCondition() == NodeCondition.NONE
 								|| neighbours.get(i).getIsDoor() == this.key)){				
-							MyResult res = bestMove(neighbours.get(i), nsteps+2, new_reward, new_path);
+							MyResult res = bestMove(neighbours.get(i), cpt+1, new_reward, new_path);
 							double r = res.getReward();
 							if (r > max2){
 								max2 = r;
@@ -206,7 +248,8 @@ public class SolverImpl implements Solver {
 					if (max > max2){
 						//NO
 						//dropKey();
-						System.out.print("DON'T TAKE THE KEY");
+//						System.out.print("DON'T TAKE THE KEY\n");
+						nodesWithKey.add(node);
 						node.setHasKey(this.key);
 						this.key = 0;
 						return new MyResult(max, best_path);
@@ -223,12 +266,13 @@ public class SolverImpl implements Solver {
 					
 					double max = 0;
 					List<Action> best_path = new ArrayList<Action>();
+					
 					for (int i = 0; i < neighbours.size() ; i++){
 						// Only if we can move to the neighbour
 						if (node.getUsefulNeighbours().contains(neighbours.get(i))
 								&& (neighbours.get(i).getCondition() == NodeCondition.NONE
 								|| neighbours.get(i).getIsDoor() == this.key)){				
-							MyResult res = bestMove(neighbours.get(i), nsteps+1, reward, new_path);
+							MyResult res = bestMove(neighbours.get(i), cpt+1, reward, new_path);
 							double r = res.getReward();
 							if (r > max){
 								max = r;
@@ -241,31 +285,60 @@ public class SolverImpl implements Solver {
 	
 					//dropKey();
 					node.setHasKey(this.key);
+					nodesWithKey.add(node);
 					this.key = 0;
-					System.out.print("DROP THE KEY "+node.getHasKey());
-					new_path.add(KeyAction.DROP_KEY);
+//					System.out.print("DROP THE KEY "+node.getHasKey()+"\n");
+					new_path.add(KeyAction.DROP_KEY);					
 					
 					double max2 = 0;
 					List<Action> best_path2 = new ArrayList<Action>();
+
+					boolean door = false;
+					
 					for (int i = 0; i < neighbours.size() ; i++){
 						// Only if we can move to the neighbour
-						if (node.getUsefulNeighbours().contains(neighbours.get(i))
-								&& (neighbours.get(i).getCondition() == NodeCondition.NONE
-								|| neighbours.get(i).getIsDoor() == this.key)){				
-							MyResult res = bestMove(neighbours.get(i), nsteps+2, reward, new_path);
-							double r = res.getReward();
-							if (r > max2){
-								max2 = r;
-								best_path2 = res.getPath();
+						if (node.getUsefulNeighbours().contains(neighbours.get(i))) {
+							if (neighbours.get(i).getCondition() == NodeCondition.NEED_KEY){
+								door = true;
+							}
+							if (neighbours.get(i).getCondition() == NodeCondition.NONE 
+									|| neighbours.get(i).getIsDoor() == this.key){
+								MyResult res = bestMove(neighbours.get(i), cpt+1, reward, new_path);
+								double r = res.getReward();
+								if (r > max2){
+									max2 = r;
+									best_path2 = res.getPath();
+								}
 							}
 						}
 					}
-	
+					if (door){
+						Set<NodeDTO> nwk = new HashSet<NodeDTO>(nodesWithKey); 
+						for (NodeDTO n : nwk){
+							if (n.equals(node) == false && node.getNeighbours().contains(n)==false){
+								new_path.add(new Move(n));
+								new_path.add(KeyAction.TAKE_KEY);
+								this.key = n.getHasKey();
+								n.setHasKey(0);
+								nodesWithKey.remove(n);
+								new_path.add(new Move(node));
+								//TODO adjust reward and path
+								MyResult res = bestMove(node, cpt+1, reward, new_path);
+								double r = res.getReward();
+								if (r > max2){
+									max2 = r;
+									best_path2 = res.getPath();
+								}
+							}
+						}
+					}
+					
 					// Is it better to drop the key ?
 					if (max > max2){
 						//NO
 						//takeKey();
-						System.out.print(" DON'T DROP THE KEY ");
+//						System.out.print("DON'T DROP THE KEY\n");
+						nodesWithKey.remove(node);
 						int k = node.getHasKey();
 						node.setHasKey(0);
 						this.key = k;
@@ -302,17 +375,18 @@ public class SolverImpl implements Solver {
     }    
     
     
-    
     /**
      * MAIN, for testing and dev purposes
      * @param args
      * @throws Exception 
      */
     public static void main(String args[]) throws Exception {
+    	
     	long startTime = System.currentTimeMillis();
     	
     	Generator gen = new Generator(5,5,2);
-        MazeDTO maze = gen.generate();
+//    	MazeDTO maze = gen.generate();
+    	MazeDTO maze = gen.generateTest1(1);
         GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
         System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
         System.out.print("key :" + goals.getLoadGrabKey() + "\n");
@@ -325,8 +399,7 @@ public class SolverImpl implements Solver {
         	i++;
         	s.doOneStep();
         
-        	System.out.print("position : (" + s.getPosition().getPosx() + ","
-        		+ s.getPosition().getPosy() + ")\n");
+        	System.out.print("iteration : " +i+ "\n");
             System.out.print("key : " + s.getKey() + "\n");
         }
         if (s.isSolved()){

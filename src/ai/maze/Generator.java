@@ -25,7 +25,7 @@ public class Generator {
 
     private MazeGen mazeGen;
     private int[][] intStructure;
-    private NodeDTO[][] nodeStrcture;
+    private NodeDTO[][] nodeStructure;
     private Position mazeStartPosition;
     private NodeDTO mazeStartNode;
 
@@ -80,7 +80,7 @@ public class Generator {
         mazeGen.displayNumbers();
 
         intStructure = mazeGen.getMaze();
-        nodeStrcture = new NodeDTO[sizex][sizey];
+        nodeStructure = new NodeDTO[sizex][sizey];
 
         // Build graph
         // - Fill up with empty nodes.
@@ -95,16 +95,16 @@ public class Generator {
         defineGoalPosition();
 
         // Display dijkstraValues
-        displayDijkstra();
+//        displayDijkstra();
 
         // # Set keys and doors
         // - Analyse Key-Door amount
         makeBestWay();
-        displayBestWay();
+//        displayBestWay();
 
         // Cut maze in sections
         makeSections();
-        displaySection();
+//        displaySection();
 
         // Check that the maze can handle the level of doors and keys
         validSection = new ArrayList<>();
@@ -129,6 +129,71 @@ public class Generator {
         return getMaze();
     }
 
+    
+    /*
+     * Test 1
+     */
+    public MazeDTO generateTest1(int indDoor) {
+    	sizex = 5;
+    	sizey = 5;
+    	intStructure = new int[sizex][sizey];
+    	intStructure[0][0] = 2;
+    	intStructure[1][0] = 4;
+    	intStructure[2][0] = 14;
+    	intStructure[3][0] = 12;
+    	intStructure[4][0] = 10;
+    	intStructure[0][1] = 5;
+    	intStructure[1][1] = 12;
+    	intStructure[2][1] = 9;
+    	intStructure[3][1] = 2;
+    	intStructure[4][1] = 3;
+    	intStructure[0][2] = 6;
+    	intStructure[1][2] = 12;
+    	intStructure[2][2] = 10;
+    	intStructure[3][2] = 7;
+    	intStructure[4][2] = 9;
+    	intStructure[0][3] = 3;
+    	intStructure[1][3] = 6;
+    	intStructure[2][3] = 9;
+    	intStructure[3][3] = 5;
+    	intStructure[4][3] = 10;
+    	intStructure[0][4] = 1;
+    	intStructure[1][4] = 5;
+    	intStructure[2][4] = 12;
+    	intStructure[3][4] = 12;
+    	intStructure[4][4] = 9;
+
+    	MazeGen maze = new MazeGen(sizex, sizey, intStructure);
+    	maze.display();
+    	
+        nodeStructure = new NodeDTO[sizex][sizey];
+
+        // Build graph
+        // - Fill up with empty nodes.
+        fillWithEmptyNodes();
+        // - Create link link between nodes
+        createLinks();
+        
+        // Define start and goal
+        mazeStartPosition = new Position(1,1);
+        mazeStartNode = nodeStructure[mazeStartPosition.getX()][mazeStartPosition.getY()];
+        // - Define goal position (default, the furthest away from start position
+        defineGoalPosition();
+        
+        // # Set keys and doors
+        nodeStructure[3][1].setIsDoor(indDoor);
+        mazeMultiData[3][1][3] = indDoor;
+        nodeStructure[0][1].setHasKey(2);
+        mazeMultiData[0][1][4] = 2;
+        nodeStructure[1][3].setHasKey(1);
+        mazeMultiData[1][3][4] = 1;
+        
+        displayDoors();
+        displayKeys();
+
+        return getMaze();
+    }
+
 
     private MazeDTO  getMaze() {
 
@@ -144,11 +209,11 @@ public class Generator {
                 mazeDoors[i][j] = mazeMultiData[i][j][3];
 
                 if (mazeMultiData[i][j][3] != 0) {
-                    doorPosition.put(mazeMultiData[i][j][3], nodeStrcture[i][j]);
+                    doorPosition.put(mazeMultiData[i][j][3], nodeStructure[i][j]);
                 }
 
                 if (mazeMultiData[i][j][4] != 0) {
-                    keyPosition.put(mazeMultiData[i][j][4], nodeStrcture[i][j]);
+                    keyPosition.put(mazeMultiData[i][j][4], nodeStructure[i][j]);
                 }
             }
         }
@@ -174,7 +239,7 @@ public class Generator {
     private void fillWithEmptyNodes() {
         for (int i=0; i<sizex; i++) {
             for (int j=0; j<sizey; j++) {
-                nodeStrcture[i][j] = BizzFactory.INSTANCE.createNode(i,j);
+                nodeStructure[i][j] = BizzFactory.INSTANCE.createNode(i,j);
             }
         }
     }
@@ -191,19 +256,19 @@ public class Generator {
 
                 // Add left neighbour
                 if (val > 8) {
-                    NodeUCC.INSTANCE.addNeighbour(nodeStrcture[i][j],nodeStrcture[i][j-1]);
+                    NodeUCC.INSTANCE.addNeighbour(nodeStructure[i][j],nodeStructure[i][j-1]);
                 }
                 // Add top neighbour
                 if ((val%2) != 0) {
-                    NodeUCC.INSTANCE.addNeighbour(nodeStrcture[i][j], nodeStrcture[i-1][j]);
+                    NodeUCC.INSTANCE.addNeighbour(nodeStructure[i][j], nodeStructure[i-1][j]);
                 }
                 // Add bottom neighbour
                 if ((val-2)%4==0 || (val-3)%4==0) {
-                    NodeUCC.INSTANCE.addNeighbour(nodeStrcture[i][j], nodeStrcture[i+1][j]);
+                    NodeUCC.INSTANCE.addNeighbour(nodeStructure[i][j], nodeStructure[i+1][j]);
                 }
                 // Add right neighbour
                 if ((val >= 4 && val <= 7) || (val >= 12)) {
-                    NodeUCC.INSTANCE.addNeighbour(nodeStrcture[i][j], nodeStrcture[i][j+1]);
+                    NodeUCC.INSTANCE.addNeighbour(nodeStructure[i][j], nodeStructure[i][j+1]);
                 }
             }
         }
@@ -215,7 +280,7 @@ public class Generator {
     private void defineStartPosition() {
         Random rdm = new Random();
         mazeStartPosition = new Position(rdm.nextInt(sizex-1),rdm.nextInt(sizey-1));
-        mazeStartNode = nodeStrcture[mazeStartPosition.getX()][mazeStartPosition.getY()];
+        mazeStartNode = nodeStructure[mazeStartPosition.getX()][mazeStartPosition.getY()];
     }
 
     /**
@@ -229,7 +294,7 @@ public class Generator {
         int[] maxPath = getMaxDistanceFrom(null, mazeStartNode, 0);
 
         mazeGoalPosition = new Position(maxPath[0],maxPath[1]);
-        mazeGoalNode = nodeStrcture[maxPath[0]][maxPath[1]];
+        mazeGoalNode = nodeStructure[maxPath[0]][maxPath[1]];
         mazeGoalNode.setGoal();
     }
 
@@ -546,7 +611,7 @@ public class Generator {
         } while(mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][2] == section.getId());
 
         mazeMultiData[walker.getPosx()][walker.getPosy()][4] = i;
-        nodeStrcture[walker.getPosx()][walker.getPosy()].setHasKey(i);
+        nodeStructure[walker.getPosx()][walker.getPosy()].setHasKey(i);
 
     }
 
