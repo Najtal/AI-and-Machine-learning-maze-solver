@@ -1,7 +1,7 @@
 package ucc;
 
 /**
- * Use case cntroller over RSSI
+ * Use case controller over RSSI
  */
 public class NodeUCCImpl implements NodeUCC {
 

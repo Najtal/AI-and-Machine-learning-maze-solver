@@ -30,6 +30,8 @@ public interface NodeDTO {
     
     boolean isGoal();
 
+	List<NodeDTO> getUsefulNeighbours();
+
     /*
      * SETTERS
      */
@@ -40,5 +42,9 @@ public interface NodeDTO {
     void setGoal();
 
     void setIsDoor(int isDoor);
+
+	void removeUsefulNeighbour(NodeDTO neighbour);
+
+	void setUsefulNeighbour(List<NodeDTO> neighbours);
 
 }
