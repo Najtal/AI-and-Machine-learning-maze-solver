@@ -385,8 +385,8 @@ public class SolverImpl implements Solver {
     	long startTime = System.currentTimeMillis();
     	
     	Generator gen = new Generator(5,5,2);
-//    	MazeDTO maze = gen.generate();
-    	MazeDTO maze = gen.generateTest1(1);
+    	MazeDTO maze = gen.generate();
+//    	MazeDTO maze = gen.generateTest1(1);
         GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
         System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
         System.out.print("key :" + goals.getLoadGrabKey() + "\n");

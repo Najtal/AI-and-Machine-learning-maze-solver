@@ -20,6 +20,12 @@ public class MazeGen {
         generateMaze(0, 0);
     }
 
+    public MazeGen(int x, int y, int[][] struct){
+    	this.x = x;
+        this.y = y;
+        maze = struct;
+    }
+    
     public void display() {
         for (int i = 0; i < y; i++) {
             // draw the north edge
