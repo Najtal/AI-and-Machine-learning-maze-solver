@@ -306,7 +306,7 @@ public class SolverImpl implements Solver {
 					double new_reward = reward+key_rwd*Math.pow(gamma, path.size());
 
 					double max2 = 0;
-					MyResult best_res2 = null;
+					MyResult best_res2 = new MyResult(0, new ArrayList<Action>(), nodesWithKey, myKey);;
 					
 					if (deadend){
 						int nodeKey = node.getHasKey();
@@ -751,9 +751,9 @@ public class SolverImpl implements Solver {
     	
     	long startTime = System.currentTimeMillis();
 
-//    	Generator gen = new Generator(7,7,2);
-//    	MazeDTO maze = gen.generate();
-    	MazeDTO maze = test1();
+    	Generator gen = new Generator(7,7,2);
+    	MazeDTO maze = gen.generate();
+//    	MazeDTO maze = test1();
         GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
         System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
         System.out.print("key :" + goals.getLoadGrabKey() + "\n");
