@@ -19,6 +19,7 @@ public class NodeImpl extends BizzObjectImpl implements Node {
     private boolean isDoorOpen;
 	private int hasKey; // If < 1 means has no key. Otherwise, key number
     private boolean isGoal;
+    private NodeCondition hasCondition;
 	private List<NodeDTO> neighbours;
 	private List<NodeDTO> usefulNeighbours;
 	private Map<NodeDTO, NodeCondition> neighboursHasCondition;
@@ -59,15 +60,9 @@ public class NodeImpl extends BizzObjectImpl implements Node {
         this.neighbours = new ArrayList<>();
         this.usefulNeighbours = new ArrayList<>();
         this.neighboursHasCondition = new HashMap<>();
+        this.hasCondition = NodeCondition.NONE;
     }
 
-
-    @Override
-    public NodeCondition getCondition() {
-        if (this.isDoor > 0)
-            return NodeCondition.NEED_KEY;
-        return NodeCondition.NONE;
-    }
 
     /*
      * GETTERS
@@ -90,6 +85,11 @@ public class NodeImpl extends BizzObjectImpl implements Node {
     @Override
     public int getHasKey() {
         return hasKey;
+    }
+
+    @Override
+    public NodeCondition getCondition() {
+        return this.hasCondition;
     }
 
     @Override
@@ -138,6 +138,11 @@ public class NodeImpl extends BizzObjectImpl implements Node {
 
     public void setIsDoor(int isDoor) {
         this.isDoor = isDoor;
+    }
+
+    @Override
+    public void setCondition(NodeCondition condition) {
+        this.hasCondition = condition;
     }
 
     @Override

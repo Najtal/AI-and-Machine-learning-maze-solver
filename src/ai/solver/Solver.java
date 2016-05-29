@@ -7,5 +7,5 @@ public interface Solver {
 
     boolean isSolved();
 
-    void doOneStep() throws Exception;
+    int doOneStep() throws Exception;
 }

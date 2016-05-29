@@ -47,4 +47,6 @@ public interface NodeDTO {
 
 	void setUsefulNeighbour(List<NodeDTO> neighbours);
 
+	void setCondition(NodeCondition condition);
+
 }

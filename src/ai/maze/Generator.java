@@ -11,6 +11,8 @@ import util.Section;
 
 import java.util.*;
 
+import constant.NodeCondition;
+
 /**
  * Created by jvdur on 12/05/2016.
  */
@@ -55,7 +57,7 @@ public class Generator {
 
     /**
      * Constructor : set a new maze-generator object
-     * @param sizex the x axis lenght of the maze
+     * @param sizex the x axis length of the maze
      * @param sizey
      * @param level
      */
@@ -131,38 +133,13 @@ public class Generator {
 
     
     /*
-     * Test 1
+     * generate a preconceived maze for tests
      */
-    public MazeDTO generateTest1(int indDoor) {
-    	sizex = 5;
-    	sizey = 5;
-    	intStructure = new int[sizex][sizey];
-    	intStructure[0][0] = 2;
-    	intStructure[1][0] = 4;
-    	intStructure[2][0] = 14;
-    	intStructure[3][0] = 12;
-    	intStructure[4][0] = 10;
-    	intStructure[0][1] = 5;
-    	intStructure[1][1] = 12;
-    	intStructure[2][1] = 9;
-    	intStructure[3][1] = 2;
-    	intStructure[4][1] = 3;
-    	intStructure[0][2] = 6;
-    	intStructure[1][2] = 12;
-    	intStructure[2][2] = 10;
-    	intStructure[3][2] = 7;
-    	intStructure[4][2] = 9;
-    	intStructure[0][3] = 3;
-    	intStructure[1][3] = 6;
-    	intStructure[2][3] = 9;
-    	intStructure[3][3] = 5;
-    	intStructure[4][3] = 10;
-    	intStructure[0][4] = 1;
-    	intStructure[1][4] = 5;
-    	intStructure[2][4] = 12;
-    	intStructure[3][4] = 12;
-    	intStructure[4][4] = 9;
-
+    public MazeDTO generateTest(int size, int[][]struct, List<Position> keys, List<Position> doors, Position start) {
+    	sizex = size;
+    	sizey = size;
+    	intStructure = struct;
+    	
     	MazeGen maze = new MazeGen(sizex, sizey, intStructure);
     	maze.display();
     	
@@ -175,18 +152,21 @@ public class Generator {
         createLinks();
         
         // Define start and goal
-        mazeStartPosition = new Position(1,1);
+        mazeStartPosition = start;
         mazeStartNode = nodeStructure[mazeStartPosition.getX()][mazeStartPosition.getY()];
         // - Define goal position (default, the furthest away from start position
         defineGoalPosition();
         
         // # Set keys and doors
-        nodeStructure[3][1].setIsDoor(indDoor);
-        mazeMultiData[3][1][3] = indDoor;
-        nodeStructure[0][1].setHasKey(2);
-        mazeMultiData[0][1][4] = 2;
-        nodeStructure[1][3].setHasKey(1);
-        mazeMultiData[1][3][4] = 1;
+        for (int i=0; i < doors.size(); i++){
+        	nodeStructure[doors.get(i).getX()][doors.get(i).getY()].setIsDoor(i+1);
+        	nodeStructure[doors.get(i).getX()][doors.get(i).getY()].setCondition(NodeCondition.NEED_KEY);
+        	mazeMultiData[doors.get(i).getX()][doors.get(i).getY()][3] = i+1;
+        }
+        for (int i=0; i < keys.size(); i++){
+        	nodeStructure[keys.get(i).getX()][keys.get(i).getY()].setHasKey(i+1);
+        	mazeMultiData[keys.get(i).getX()][keys.get(i).getY()][4] = i+1;
+        }
         
         displayDoors();
         displayKeys();
@@ -534,6 +514,7 @@ public class Generator {
         }
 
         nextStep.setIsDoor(doorLevel);
+        nextStep.setCondition(NodeCondition.NEED_KEY);
         mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][3] = doorLevel;
     }
 
