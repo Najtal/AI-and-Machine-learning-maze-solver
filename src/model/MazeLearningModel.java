@@ -2,11 +2,8 @@ package model;
 
 import ai.maze.Generator;
 import app.AppContext;
-import exception.FatalException;
-import exception.MazeException;
 import ucc.MazeDTO;
 import ucc.MazeUCCImpl;
-import util.Log;
 
 import java.util.Random;
 
@@ -36,8 +33,15 @@ public class MazeLearningModel {
         int sizey = Math.max(2, (glm.getmYmax()-glm.getmYmin() <= 0) ? glm.getmYmin() : glm.getmYmin() + rdm.nextInt(glm.getmYmax()-glm.getmYmin()));
         int level = Math.max(0, (glm.getmMaxLevel()-glm.getmMinLevel() <= 0) ? glm.getmMinLevel() : glm.getmMinLevel() + rdm.nextInt(glm.getmMaxLevel()-glm.getmMinLevel()));
 
+        // Init new generator
         Generator gm = new Generator(sizex, sizey, level);
 
+        // Generate Maze
+        mazeOmniscient = gm.generate();
+        // Make Ninja maze out of maze
+        mazeNinja = MazeUCCImpl.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
+
+        /*
         while (true) {
             try {
                 mazeOmniscient = gm.generate();
@@ -52,8 +56,8 @@ public class MazeLearningModel {
             }
             break;
         }
-
         mazeNinja = MazeUCCImpl.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
+        */
     }
 
 

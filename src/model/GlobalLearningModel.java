@@ -39,7 +39,6 @@ public class GlobalLearningModel {
         this.mMaxLevel = mMaxLevel;
         this.rMode = rMode;
 
-        runningThread = new LearnerImpl(this);
     }
 
 

@@ -19,7 +19,6 @@ public class LearnerImpl extends LearnerRunner {
 
     public LearnerImpl(GlobalLearningModel glm) {
         super(glm);
-        mlm = new MazeLearningModel(glm);
     }
 
     @Override
@@ -35,7 +34,8 @@ public class LearnerImpl extends LearnerRunner {
             GoalDTO goals = getNextGoalLoad();
 
             // Instanciate a solver
-            Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
+            //Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
+            Solver s = new SolverImpl(mlm.getMazeOmniscient(), goals);
 
             // Learn from maze
             learnMaze(mlm, s);
@@ -64,8 +64,11 @@ public class LearnerImpl extends LearnerRunner {
                 }
 
                 System.out.print("Next step: ");
-                s.doOneStep();
-                System.out.println("done !");
+                try {
+                    s.doOneStep();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 if (s.isSolved()) {
                     glm.setDone(true);
@@ -81,7 +84,7 @@ public class LearnerImpl extends LearnerRunner {
 
         // TODO get the next try of goal load to optimize. Data can be reached in MLM
 
-        return BizzFactory.INSTANCE.createGoal(1, 3, 5, 10, -1);
+        return BizzFactory.INSTANCE.createGoal(10, 20, 30, 400, 1);
     }
 
     @Override

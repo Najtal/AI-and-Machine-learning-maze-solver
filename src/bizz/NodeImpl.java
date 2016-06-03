@@ -120,7 +120,6 @@ public class NodeImpl extends BizzObjectImpl implements Node {
     /*
      * SETTERS
      */
-
     @Override
     public void setHasKey(int hasKey) {
         this.hasKey = hasKey;

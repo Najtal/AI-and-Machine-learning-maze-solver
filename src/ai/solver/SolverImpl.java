@@ -10,9 +10,7 @@ import util.Position;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -78,11 +76,7 @@ public class SolverImpl implements Solver {
     @Override
     public int doOneStep() throws Exception{
     	try {
-    	   	
-    		if (this.pos.getPosx() == 2 && this.pos.getPosy() == 0){
-    			System.out.print("");
-    		}
-    		
+
 			//for each "big step" of doOneStep(), we put back to 0 the number of "little steps" and the reward
 			MyResult res = bestMove(this.pos, this.pos, 0, 0, new ArrayList<Action>(), this.nodesWK, this.key);
 			
@@ -256,7 +250,6 @@ public class SolverImpl implements Solver {
 					nodesWithKey[node.getHasKey()-1] = node;
 					
 					// Move in the best direction with or without taking the key
-					    			
 					// Without the key
 					
 					double max = 0;
@@ -613,7 +606,6 @@ public class SolverImpl implements Solver {
     	MazeDTO maze = gen.generateTest(size, structure, keys, doors, new Position(0,0));
     	return maze;
     }    
-    
 
     private static MazeDTO test3(){
     	int size = 5;
