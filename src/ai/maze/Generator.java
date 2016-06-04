@@ -235,7 +235,7 @@ public class Generator {
                 int val = intStructure[j][i];
 
                 // Add left neighbour
-                if (val > 8) {
+                if (val >= 8) {
                     NodeUCC.INSTANCE.addNeighbour(nodeStructure[i][j],nodeStructure[i][j-1]);
                 }
                 // Add top neighbour
