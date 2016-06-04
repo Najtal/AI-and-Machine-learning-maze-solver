@@ -1,7 +1,12 @@
 package model;
 
+import ai.algorithm.LAGridSearch;
+import ai.algorithm.LARandomSearch;
+import ai.algorithm.LearnAlgorithm;
 import ai.maze.Generator;
 import app.AppContext;
+import bizz.GoalLoadImpl;
+import ucc.GoalDTO;
 import ucc.MazeDTO;
 import ucc.MazeUCCImpl;
 
@@ -17,13 +22,34 @@ public class MazeLearningModel {
     private MazeDTO mazeOmniscient;
     private MazeDTO mazeNinja;
 
+    private int nbStepsToResolveMaze;
+    private GoalDTO lastGoals;
+
+    private LearnAlgorithm algo;
+
 
     /**
      * Constructor: generate maze and make it a ninja maze copy
      */
     public MazeLearningModel(GlobalLearningModel glm) {
-
         this.glm = glm;
+        setAlgorithm();
+        generateMaze();
+    }
+
+    private void setAlgorithm() {
+        switch(glm.getAlgorithm()) {
+            case RANDOM_SEARCH :
+                this.algo = new LARandomSearch(new GoalLoadImpl(10, 20, 30, 200, 1));
+                break;
+            case GRID_SEARCH :
+                this.algo = new LAGridSearch();
+                break;
+        }
+    }
+
+    private void generateMaze() {
+
         int trials = 1;
         int trialsMax = Math.max((Integer.parseInt(AppContext.INSTANCE.getProperty("mazeGenTrials"))), 1);
 
@@ -64,10 +90,6 @@ public class MazeLearningModel {
     /*
      * GETTERS
      */
-    public boolean isGoForNextStep() {
-        return goForNextStep;
-    }
-
     public MazeDTO getMazeOmniscient() {
         return mazeOmniscient;
     }
@@ -81,7 +103,15 @@ public class MazeLearningModel {
     /*
      * SETTERS
      */
-    public void setGoForNextStep(boolean goForNextStep) {
-        this.goForNextStep = goForNextStep;
+    public void setNbStepsToResolveMaze(int nbStepsToResolveMaze) {
+        this.nbStepsToResolveMaze = nbStepsToResolveMaze;
+    }
+
+    public GoalDTO getNextGoalLoad() {
+        return algo.getNextGoal();
+    }
+
+    public boolean isGoForNextStep() {
+        return goForNextStep;
     }
 }

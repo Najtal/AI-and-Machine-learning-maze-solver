@@ -13,6 +13,6 @@ public interface GoalDTO {
 
     int getLoadReachGoal();
 
-    int getLoadAaction();
+    int getLoadAction();
 
 }

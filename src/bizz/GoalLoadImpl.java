@@ -9,15 +9,15 @@ public class GoalLoadImpl extends BizzObjectImpl implements GoalLoad {
     private int loadGrabKey;
     private int loadOpenDoor;
     private int loadReachGoal;
-    private int loadAaction;
+    private int loadAction;
 
 
-    public GoalLoadImpl(int loadDiscoverPath, int loadGrabKey, int loadOpenDoor, int loadReachGoal, int loadAaction) {
+    public GoalLoadImpl(int loadDiscoverPath, int loadGrabKey, int loadOpenDoor, int loadReachGoal, int loadAction) {
         this.loadDiscoverPath = loadDiscoverPath;
         this.loadGrabKey = loadGrabKey;
         this.loadOpenDoor = loadOpenDoor;
         this.loadReachGoal = loadReachGoal;
-        this.loadAaction = loadAaction;
+        this.loadAction = loadAction;
     }
 
 
@@ -41,7 +41,7 @@ public class GoalLoadImpl extends BizzObjectImpl implements GoalLoad {
         return loadReachGoal;
     }
 
-    public int getLoadAaction() {
-        return loadAaction;
+    public int getLoadAction() {
+        return loadAction;
     }
 }

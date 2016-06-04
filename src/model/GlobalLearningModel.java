@@ -1,7 +1,8 @@
 package model;
 
-import ai.learner.LearnerImpl;
-import ai.learner.LearnerRunner;
+import ai.learner.Learner;
+import app.AppContext;
+import constant.LearningAlgorithm;
 import constant.RunningMode;
 import constant.RunningStatus;
 
@@ -22,9 +23,10 @@ public class GlobalLearningModel {
     private RunningMode rMode;
     private RunningStatus rStatus;
 
-    private LearnerRunner runningThread;
+    private Learner runningThread;
     private boolean done;
     private int autoRunningSpeed;
+    private LearningAlgorithm algorithm;
 
     public GlobalLearningModel(int nbMaze, int nbIterationPerMaze,
                                 int mXmin, int mYmin, int mXmax, int mYmax,
@@ -38,17 +40,9 @@ public class GlobalLearningModel {
         this.mMinLevel = mMinLevel;
         this.mMaxLevel = mMaxLevel;
         this.rMode = rMode;
+        this.autoRunningSpeed = Integer.parseInt(AppContext.INSTANCE.getProperty("autoRunningSpeed"));
+        this.setAlgorithm(LearningAlgorithm.RANDOM_SEARCH);
 
-    }
-
-
-    public void createLearner() {
-        runningThread = new LearnerImpl(this);
-    }
-
-    public void start() {
-        rStatus = RunningStatus.RUNNING;
-        runningThread.run();
     }
 
 
@@ -92,7 +86,7 @@ public class GlobalLearningModel {
         return rStatus;
     }
 
-    public LearnerRunner getRunningThread() {
+    public Learner getRunningThread() {
         return runningThread;
     }
 
@@ -116,7 +110,15 @@ public class GlobalLearningModel {
         return autoRunningSpeed;
     }
 
-    public void setAutoRunningSpeed(int autoRunningSpeed) {
-        this.autoRunningSpeed = autoRunningSpeed;
+    public void setRunningThread(Learner runningThread) {
+        this.runningThread = runningThread;
+    }
+
+    public LearningAlgorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(LearningAlgorithm algorithm) {
+        this.algorithm = algorithm;
     }
 }

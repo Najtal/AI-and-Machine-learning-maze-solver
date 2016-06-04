@@ -1,5 +1,6 @@
 package app;
 
+import ai.learner.Learner;
 import constant.RunningMode;
 import constant.RunningStatus;
 import gui.maze.MazeFrame;
@@ -68,13 +69,17 @@ public class PgmController {
                 public void run() {
 
                     // Create and Init a Global learning model
-                    glm = new GlobalLearningModel(1, 1, 4, 4, 4, 4, 1, 1, RunningMode.FULL_SPEED);
+                    glm = new GlobalLearningModel(1, 1, 6, 6, 6, 6, 1, 1, RunningMode.FULL_SPEED);
+
+                    // Create Learner
+                    Learner learner = new Learner(glm);
 
                     // Create a Learner
-                    glm.createLearner();
+                    glm.setRunningThread(learner);
 
                     // Run it !
-                    glm.start();
+                    glm.setrStatus(RunningStatus.RUNNING);
+                    learner.run();
 
                 }
             }.start();
