@@ -24,8 +24,6 @@ public class LARandomSearch extends LearnAlgorithm {
 
     @Override
     public GoalDTO getNextGoal() {
-
-
         int loadDiscoverPath = MIN + (int)(Math.random() * ((MAX - MIN) + 1));
         int loadGrabKey = MIN + (int)(Math.random() * ((MAX - MIN) + 1));
         int loadOpenDoor = MIN + (int)(Math.random() * ((MAX - MIN) + 1));
@@ -44,6 +42,11 @@ public class LARandomSearch extends LearnAlgorithm {
             bestCost = nbSteps;
             bestGoals = lastGoals;
         }
+    }
+
+    @Override
+    public GoalDTO getBestGoals() {
+        return bestGoals;
     }
 
 }

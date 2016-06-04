@@ -22,8 +22,8 @@ public class MazeLearningModel {
     private MazeDTO mazeOmniscient;
     private MazeDTO mazeNinja;
 
-    private int nbStepsToResolveMaze;
-    private GoalDTO lastGoals;
+    private int bestSteps;
+    private GoalDTO bestGoals;
 
     private LearnAlgorithm algo;
 
@@ -103,8 +103,15 @@ public class MazeLearningModel {
     /*
      * SETTERS
      */
-    public void setNbStepsToResolveMaze(int nbStepsToResolveMaze) {
-        this.nbStepsToResolveMaze = nbStepsToResolveMaze;
+    private void setBestSteps(int bestSteps) {
+        this.bestSteps = bestSteps;
+    }
+
+    public void setNewBestMvmt(int newMove) {
+        if (bestSteps > newMove) {
+            bestSteps = newMove;
+            bestGoals = algo.getBestGoals();
+        }
     }
 
     public GoalDTO getNextGoalLoad() {
@@ -113,5 +120,13 @@ public class MazeLearningModel {
 
     public boolean isGoForNextStep() {
         return goForNextStep;
+    }
+
+    public GoalDTO getBestGoals() {
+        return bestGoals;
+    }
+
+    public int getBestSteps() {
+        return bestSteps;
     }
 }

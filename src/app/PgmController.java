@@ -69,7 +69,7 @@ public class PgmController {
                 public void run() {
 
                     // Create and Init a Global learning model
-                    glm = new GlobalLearningModel(1, 1, 6, 6, 6, 6, 1, 1, RunningMode.FULL_SPEED);
+                    glm = new GlobalLearningModel(1, 20, 6, 6, 6, 6, 2, 1, RunningMode.FULL_SPEED);
 
                     // Create Learner
                     Learner learner = new Learner(glm);

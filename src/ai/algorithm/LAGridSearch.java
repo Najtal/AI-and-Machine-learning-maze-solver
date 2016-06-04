@@ -15,4 +15,9 @@ public class LAGridSearch extends LearnAlgorithm {
     @Override
     public void setNumberStepsNeeded(int nbSteps) {
     }
+
+    @Override
+    public GoalDTO getBestGoals() {
+        return null;
+    }
 }

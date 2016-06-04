@@ -40,6 +40,8 @@ public class Learner implements Runnable, LearnerInt {
 
         }
 
+        System.out.println("Best step: " + mlm.getBestSteps());
+
     }
 
     /**
@@ -61,7 +63,9 @@ public class Learner implements Runnable, LearnerInt {
             // Learn from maze
             int nbStepsNeeded = executeMaze(s);
 
-            mlm.setNbStepsToResolveMaze(nbStepsNeeded);
+            System.out.println("Maze " + i + " # steps : "  + nbStepsNeeded);
+
+            mlm.setNewBestMvmt(nbStepsNeeded);
         }
 
 
@@ -93,6 +97,7 @@ public class Learner implements Runnable, LearnerInt {
             }
 
             if (s.isSolved()) {
+                Log.logFine("Maze solved");
                 return nbSteps;
             }
         }

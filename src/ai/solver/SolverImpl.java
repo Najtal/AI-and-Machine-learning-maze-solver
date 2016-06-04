@@ -8,11 +8,7 @@ import ucc.MazeDTO;
 import ucc.NodeDTO;
 import util.Position;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -74,7 +70,7 @@ public class SolverImpl implements Solver {
     public int doOneStep() throws Exception{
     	try {
     		if (this.pos.getPosx() == 4 && this.pos.getPosy()==3){
-    			System.out.print("");
+    			//System.out.print("");
     		}
     		
 			//for each "big step" of doOneStep(), we put back to 0 the number of "little steps" and the reward
@@ -96,7 +92,7 @@ public class SolverImpl implements Solver {
 			this.key = res.getKey();
     		
 			if (this.pos == null){
-				System.out.print(path);
+				//System.out.print(path);
 			}
 			
 			//We update the part of the maze we know
@@ -105,11 +101,11 @@ public class SolverImpl implements Solver {
 			}			
 
     		double reward = res.getReward();
-    		System.out.print("\nreward = "+ reward+ ", path : ");
+    		//System.out.print("\nreward = "+ reward+ ", path : ");
 			for (int i = 0; i < path.size() ; i++){
-				System.out.print(path.get(i) + ", ");
+				//System.out.print(path.get(i) + ", ");
 			}
-			System.out.print("\n");
+			//System.out.print("\n");
 			return path.size();
 		} catch (Exception e) {
 			throw e;
@@ -128,7 +124,7 @@ public class SolverImpl implements Solver {
 		if (neighbours.size() == 0){
 			System.out.print("!!!!!!!!!!!!!!!no neighbours for " + node + "(debut)\n");
 			if (from!=node){
-				System.out.print("go to from\n");
+				//System.out.print("go to from\n");
 				from.removeUsefulNeighbour(node);
 				bestMove(from, node, cpt+1, reward, new_path, nodesKey, myKey, keyRemoved);
 			}
