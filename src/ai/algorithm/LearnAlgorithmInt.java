@@ -11,4 +11,6 @@ public interface LearnAlgorithmInt {
 
     void setNumberStepsNeeded(int nbSteps);
 
+    GoalDTO getBestGoals();
+
 }
