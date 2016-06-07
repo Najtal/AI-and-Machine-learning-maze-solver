@@ -4,7 +4,6 @@ import ai.algorithm.LAGridSearch;
 import ai.algorithm.LARandomSearch;
 import ai.algorithm.LearnAlgorithm;
 import ai.maze.Generator;
-import app.AppContext;
 import exception.FatalException;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
@@ -52,7 +51,7 @@ public class MazeLearningModel {
     private void generateMaze() {
 
         int trials = 1;
-        int trialsMax = Math.max((Integer.parseInt(AppContext.INSTANCE.getProperty("mazeGenTrials"))), 1);
+        int trialsMax = 10;//Math.max((Integer.parseInt(AppContext.INSTANCE.getProperty("mazeGenTrials"))), 1);
 
         Random rdm = new Random();
 
@@ -81,7 +80,6 @@ public class MazeLearningModel {
                     trials++;
                 }
             }
-            break;
         }
         mazeNinja = MazeUCCImpl.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
 

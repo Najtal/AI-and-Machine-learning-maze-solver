@@ -63,7 +63,8 @@ public class Learner implements Runnable, LearnerInt {
             // Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
             // TODO : The solver should take a ninja maze and not a ominshient maze
 
-            MazeDTO maze = mlm.getMazeOmniscient();
+            MazeDTO maze;
+            maze = mlm.getMazeOmniscient();
             mlm.setMazeNinja(maze);
             MazeUCC.INSTANCE.clean(maze);
 
