@@ -5,9 +5,12 @@ import ai.algorithm.LARandomSearch;
 import ai.algorithm.LearnAlgorithm;
 import ai.maze.Generator;
 import app.AppContext;
+import exception.FatalException;
+import exception.MazeException;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
 import ucc.MazeUCCImpl;
+import util.Log;
 
 import java.util.Random;
 
@@ -62,11 +65,11 @@ public class MazeLearningModel {
         Generator gm = new Generator(sizex, sizey, level);
 
         // Generate Maze
-        mazeOmniscient = gm.generate();
+        //mazeOmniscient = gm.generate();
         // Make Ninja maze out of maze
-        mazeNinja = MazeUCCImpl.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
+        //mazeNinja = MazeUCCImpl.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
 
-        /*
+
         while (true) {
             try {
                 mazeOmniscient = gm.generate();
@@ -81,8 +84,8 @@ public class MazeLearningModel {
             }
             break;
         }
-        mazeNinja = MazeUCCImpl.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
-        */
+        mazeNinja = MazeUCCImpl.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
+
     }
 
 

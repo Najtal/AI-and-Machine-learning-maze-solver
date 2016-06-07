@@ -4,6 +4,7 @@ import ai.learner.Learner;
 import constant.LearningAlgorithm;
 import constant.RunningMode;
 import constant.RunningStatus;
+import gui.data.DataFrame;
 import gui.maze.MazeFrame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -186,7 +187,7 @@ public class PgmController {
     @FXML
     private void butExData(final ActionEvent event)
     {
-        System.out.println("couocou ! 4");
+        new DataFrame(glm.getRuns());
     }
 
 }

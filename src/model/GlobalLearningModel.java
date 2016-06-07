@@ -27,6 +27,7 @@ public class GlobalLearningModel {
     private boolean done;
     private static int autoRunningSpeed;
     private LearningAlgorithm algorithm;
+    private MlModel runs;
     /*
      *  0 : wait for gui action
      *  1 : is processing
@@ -49,6 +50,7 @@ public class GlobalLearningModel {
         this.rMode = rMode;
         this.rStatus = RunningStatus.RUNNING;
         this.setAlgorithm(algo);
+        this.runs = new MlModel();
 
     }
 
@@ -147,5 +149,9 @@ public class GlobalLearningModel {
 
     public MazeFrame getNinjaFrame() {
         return ninjaFrame;
+    }
+
+    public MlModel getRuns() {
+        return runs;
     }
 }

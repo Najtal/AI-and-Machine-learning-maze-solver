@@ -158,7 +158,7 @@
                               <Label layoutX="553.0" layoutY="61.0" text="Open detail windows" />
                               <Button id="omnMazeButton" fx:id="omnMazeButton" disable="true" layoutX="622.0" layoutY="138.0" mnemonicParsing="false" onAction="#butOmniscient" prefHeight="30.0" prefWidth="326.0" text="Omniscient maze" textAlignment="RIGHT" />
                               <Button id="ninMazeButton" fx:id="ninMazeButton" disable="true" layoutX="622.0" layoutY="223.0" mnemonicParsing="false" onAction="#butExSolver" prefHeight="37.0" prefWidth="326.0" text="Solver maze" textAlignment="RIGHT" />
-                              <Button id="btdata" fx:id="btdata" disable="true" layoutX="623.0" layoutY="309.0" mnemonicParsing="false" onAction="#butExData" prefHeight="32.0" prefWidth="325.0" text="Data analytics" textAlignment="RIGHT" />
+                              <Button id="btdata" fx:id="btdata" disable="false" layoutX="623.0" layoutY="309.0" mnemonicParsing="false" onAction="#butExData" prefHeight="32.0" prefWidth="325.0" text="Data analytics" textAlignment="RIGHT" />
                            </children>
                         </AnchorPane>
                      </children>

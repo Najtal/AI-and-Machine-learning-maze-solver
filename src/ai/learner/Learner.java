@@ -71,6 +71,7 @@ public class Learner implements Runnable, LearnerInt {
 
             // Learn from maze
             int nbStepsNeeded = executeMaze(s);
+            glm.getRuns().addRun(goals, nbStepsNeeded);
 
             //System.out.println("Maze " + i + ": GOALS: "+goals.toString()+" STEPS: "+nbStepsNeeded);
 
@@ -101,6 +102,7 @@ public class Learner implements Runnable, LearnerInt {
             } catch (Exception e) {
                 Log.logSevere("Error while executing maze solver next step : " + e.getMessage());
                 e.printStackTrace();
+                System.exit(1);
             }
 
             if (glm.getNinjaFrame() != null) {
