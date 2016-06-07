@@ -52,8 +52,8 @@ public class SolverImpl implements Solver {
 		this.treshold = Math.min(60,maze.getSizex()*maze.getSizey());
 		this.pos = maze.getStartNode();
 		this.pos.setUsefulNeighbour(this.pos.getNeighbours());
-		this.level = maze.getNbKey();
-		this.nodesWK = new NodeDTO[this.level+1];
+		this.level = maze.getNbKey()+1;
+		this.nodesWK = new NodeDTO[this.level];
 		this.maze = maze;
 		this.maze.setSolverkeys(new NodeDTO[this.level]);
 		this.computedPath = new ArrayList<Action>();
@@ -357,7 +357,6 @@ public class SolverImpl implements Solver {
 					new_path.add(new Action(typeAction.DROP_KEY, node, myKey));
 					myKey = 0;
 				}
-				int c = next_node.getIsDoor();
 				door[next_node.getIsDoor()-1] = true;
 			}
 		}
@@ -369,10 +368,6 @@ public class SolverImpl implements Solver {
 				if (from != neighbours.get(i) &&
 						node.getUsefulNeighbours().contains(neighbours.get(i))) {
 					if (neighbours.get(i).getCondition() == NodeCondition.NEED_KEY){
-						NodeDTO a = neighbours.get(i);
-						int b = neighbours.get(i).getIsDoor();
-						System.out.print(b);
-						System.out.print(door.length);
 						door[neighbours.get(i).getIsDoor()-1] = true;
 					}
 					if (neighbours.get(i).getCondition() == NodeCondition.NONE
