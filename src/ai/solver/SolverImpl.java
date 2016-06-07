@@ -278,6 +278,10 @@ public class SolverImpl implements Solver {
 			int nodeKey = node.getHasKey();
 			MyResult res = bestMove(node, node, new_reward, new_path, nodesWithKey, myKey, keyRemoved);
 			node.setHasKey(nodeKey);
+			List<Action> res_p = res.getPath();
+				if (res_p.get(res_p.size()-1).getDestination()==null){
+					res.setReward(-1);
+				}
 			return res;
 			}
         else {
@@ -412,6 +416,8 @@ public class SolverImpl implements Solver {
         public double getReward() {
             return this.reward;
         }
+
+		public void setReward(double r) { this.reward = r; }
 
         public List<Action> getPath() {
             return this.path;
@@ -716,11 +722,11 @@ public class SolverImpl implements Solver {
     	long startTime = System.currentTimeMillis();
 
     	
-    	for (int j=0; j< 300; j++){
+    	for (int j=0; j< 500; j++){
     		MazeDTO maze = null;
     		while (maze == null){
     			try{
-    				Generator gen = new Generator(12,12,7);
+    				Generator gen = new Generator(7,7,3);
     				maze = gen.generate();
     		    	if (maze.getNbdoor()>maze.getNbKey()) maze=null;
     			}catch (Exception e){
@@ -740,8 +746,6 @@ public class SolverImpl implements Solver {
 	        while (s.isSolved() == false && i<100){
 	        	i++;
 	        	n += s.doOneStep();
-	        
-	            System.out.print("key : " + s.getKey() + "\n");
 
 	        	long endTime = System.currentTimeMillis();
 	        	long totalTime_m = endTime - startTime;
@@ -752,8 +756,7 @@ public class SolverImpl implements Solver {
 	        	long totalTime_m = endTime - startTime;
 	        	System.out.print("\nYOUHOUOU ! in "+i+" big steps and "+n+" little steps ("+totalTime_m+"ms)\n");
 	        }
-	        System.out.print("\n"+j+"\n");
-    	}
+		}
 
         long endTime = System.currentTimeMillis();
     	long totalTime_m = endTime - startTime;
