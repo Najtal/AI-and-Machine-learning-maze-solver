@@ -1,5 +1,6 @@
 package model;
 
+import ai.algorithm.LAGaussSearch;
 import ai.algorithm.LAGridSearch;
 import ai.algorithm.LARandomSearch;
 import ai.algorithm.LearnAlgorithm;
@@ -45,6 +46,9 @@ public class MazeLearningModel {
                 break;
             case GRID_SEARCH :
                 this.algo = new LAGridSearch();
+                break;
+            case GAUSSIAN_SEARCH :
+                this.algo = new LAGaussSearch();
                 break;
         }
     }

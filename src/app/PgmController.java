@@ -94,6 +94,9 @@ public class PgmController {
             case "Grid search" :
                 la = LearningAlgorithm.GRID_SEARCH;
                 break;
+            case "Gaussian search" :
+                la = LearningAlgorithm.GAUSSIAN_SEARCH;
+                break;
         }
         final LearningAlgorithm laCopy = la;
 

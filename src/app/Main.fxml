@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import java.lang.String?>
+<?import java.lang.*?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.PgmController">
    <children>
       <MenuBar>
@@ -116,6 +116,7 @@
                                       <FXCollections fx:factory="observableArrayList">
                                           <String fx:value="Random search" />
                                           <String fx:value="Grid search" />
+                                          <String fx:value="Gaussian search" />
                                       </FXCollections>
                                   </items>
                               </ChoiceBox>

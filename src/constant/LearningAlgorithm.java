@@ -5,5 +5,6 @@ package constant;
  */
 public enum LearningAlgorithm {
     RANDOM_SEARCH,
-    GRID_SEARCH
+    GRID_SEARCH,
+    GAUSSIAN_SEARCH
 }
