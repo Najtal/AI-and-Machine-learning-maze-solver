@@ -2,6 +2,7 @@ package bizz;
 
 import ucc.NodeDTO;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -58,7 +59,6 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 		this.mazeStructure = mazeStructure;
 		this.mazeKeys = mazeKeys;
 		this.mazeDoors = mazeDoors;
-
 	}
 
 
@@ -169,6 +169,10 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	public void setSolverkeys(NodeDTO[] solverkeys) {
 		this.solverkeys = solverkeys;
 	}
+
+	public void removeSolverkey(int key) { this.solverkeys[key] = null; }
+
+	public void addSolverkey(NodeDTO solverkey, int key) { this.solverkeys[key] = solverkey; }
 
 	public NodeDTO getSolverPosition() {
 		return solverPosition;
