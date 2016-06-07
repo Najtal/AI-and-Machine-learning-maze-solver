@@ -4,6 +4,7 @@ import ai.algorithm.LAGridSearch;
 import ai.algorithm.LARandomSearch;
 import ai.algorithm.LearnAlgorithm;
 import ai.maze.Generator;
+import app.AppContext;
 import exception.FatalException;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
@@ -51,12 +52,12 @@ public class MazeLearningModel {
     private void generateMaze() {
 
         int trials = 1;
-        int trialsMax = 10;//Math.max((Integer.parseInt(AppContext.INSTANCE.getProperty("mazeGenTrials"))), 1);
+        int trialsMax = Math.max((Integer.parseInt(AppContext.INSTANCE.getProperty("mazeGenTrials"))), 1);
 
         Random rdm = new Random();
 
         int sizex = Math.max(2, (glm.getmXmax()-glm.getmXmin() <= 0) ?  glm.getmXmin() : glm.getmXmin() + rdm.nextInt(glm.getmXmax()-glm.getmXmin()));
-        int sizey = Math.max(2, (glm.getmYmax()-glm.getmYmin() <= 0) ? glm.getmYmin() : glm.getmYmin() + rdm.nextInt(glm.getmYmax()-glm.getmYmin()));
+        int sizey = sizex;//Math.max(2, (glm.getmYmax()-glm.getmYmin() <= 0) ? glm.getmYmin() : glm.getmYmin() + rdm.nextInt(glm.getmYmax()-glm.getmYmin()));
         int level = Math.max(0, (glm.getmMaxLevel()-glm.getmMinLevel() <= 0) ? glm.getmMinLevel() : glm.getmMinLevel() + rdm.nextInt(glm.getmMaxLevel()-glm.getmMinLevel()));
 
         // Init new generator
@@ -74,9 +75,11 @@ public class MazeLearningModel {
                 break;
             } catch (Exception e) {
                 if (trials == trialsMax) {
-                    Log.logSevere("Could not create the maze, parameters are to restrictive !");
+                    Log.logSevere("Could not create the maze, parameters are to restrictive !"
+                    +"sizex:" + sizex + ", sizey:"+sizey + ", level:" + level);
                     throw new FatalException("Could not create the maze, parameters are to restrictive !");
                 } else {
+                    System.out.println("could not create maze :'(");
                     trials++;
                 }
             }
