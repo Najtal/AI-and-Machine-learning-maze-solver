@@ -53,6 +53,7 @@ public class Generator {
     private Section[] doorSection;
     private Section[] keySection;
 
+    private int idKey;
 
     /**
      * Constructor : set a new maze-generator object
@@ -453,14 +454,16 @@ public class Generator {
     private void selectAndPositionDoors() {
 
         int nbSectionLeft = validSectionById.size();
-
+        
+        System.out.print("nbSectionLeft :"+nbSectionLeft+"\n");
+        
         doorSection = new Section[level];
 
 
         int doorsLeft = level;
         int keyLeft = level;
 
-        // Last door before to reach the goal
+        // Last door before reaching the goal
         for (int i=validSectionById.size()-1; i>=1 ; i--) {
             if (validSectionById.get(i).isOnPath()) {
                 doorSection[doorsLeft-1] = validSectionById.get(i);
@@ -510,10 +513,12 @@ public class Generator {
             }
             walker = nextStep;
         }
-
-        nextStep.setIsDoor(doorLevel);
-        nextStep.setCondition(NodeCondition.NEED_KEY);
-        mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][3] = doorLevel;
+        
+        if (nextStep.getIsDoor()==0){
+	        nextStep.setIsDoor(doorLevel);
+	        nextStep.setCondition(NodeCondition.NEED_KEY);
+	        mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][3] = doorLevel;
+        }
     }
 
     /**
@@ -531,7 +536,7 @@ public class Generator {
                 continue;
             }
 
-            // If door has been places
+            // If door has been placed
             int maxSection = doorSection[i].getId()-1;
 
             // Decide which section has to put the key
@@ -589,8 +594,17 @@ public class Generator {
             walker = nextStep;
         } while(mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][2] == section.getId());
 
-        mazeMultiData[walker.getPosx()][walker.getPosy()][4] = i;
-        nodeStructure[walker.getPosx()][walker.getPosy()].setHasKey(i);
+        if (nodeStructure[walker.getPosx()][walker.getPosy()].getHasKey()==0){
+        	int j = i;
+        	if (this.idKey > 0) {
+        		j = idKey;
+        		idKey++;
+        	}
+	        mazeMultiData[walker.getPosx()][walker.getPosy()][4] = j;
+	        nodeStructure[walker.getPosx()][walker.getPosy()].setHasKey(j);
+        }else{
+        	if (this.idKey == 0) this.idKey = i;
+		}
 
     }
 
@@ -645,8 +659,12 @@ public class Generator {
      * @param args
      */
     public static void main(String args[]) {
-        Generator g = new Generator(7, 7, 3);
-        g.generate();
+    	boolean b = true;
+    	while (b){
+    		Generator g = new Generator(15, 15, 10);
+    		MazeDTO maze = g.generate();
+    		b = maze.getNbKey() == g.level;
+    	}
     }
 
     private void displayDijkstra() {
