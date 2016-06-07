@@ -39,16 +39,49 @@ public class DataFrame extends JFrame {
     }
 
 
-    private JPanel discoveryPathChart(MlModel mlm) {
-        XYSeries seriesGK = new XYSeries("Grab Key");
+    /**
+     * Init all settings for main frame
+     */
+    private void initFrame() {
+        this.setTitle(AppContext.INSTANCE.getProperty("guiTitle"));
+        this.setSize(
+                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeWidth")),
+                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeHeight")));
+        this.setMinimumSize(new Dimension(
+                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeMinimumWidth")),
+                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeMinimumHeight"))));
+
+        this.setLocationRelativeTo(null);
+    }
+
+    private JPanel stepChart(MlModel mlm) {
+
+        XYSeries series = new XYSeries("XYGraph");
         for (int i=0; i<mlm.getNbRuns(); i++) {
-            seriesGK.add(i, mlm.getRunGoals(i).getLoadGrabKey());
+            series.add(i, mlm.getRunSteps(i));
         }
 
-        XYSeries seriesLA = new XYSeries("Action");
-        for (int i=0; i<mlm.getNbRuns(); i++) {
-            seriesLA.add(i, mlm.getRunGoals(i).getLoadAction());
-        }
+
+        // Add the series to your data set
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+
+        // Generate the graph
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Steps evolution", // Title
+                "Maze solver #", // x-axis Label
+                "# steps", // y-axis Label
+                dataset, // Dataset
+                PlotOrientation.VERTICAL, // Plot Orientation
+                true, // Show Legend
+                true, // Use tooltips
+                false // Configure chart to generate URLs?
+        );
+
+        return new ChartPanel(chart);
+    }
+
+    private JPanel discoveryPathChart(MlModel mlm) {
 
         XYSeries seriesLD = new XYSeries("discovery path");
         for (int i=0; i<mlm.getNbRuns(); i++) {
@@ -57,8 +90,6 @@ public class DataFrame extends JFrame {
 
         // Add the series to your data set
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(seriesGK);
-        dataset.addSeries(seriesLA);
         dataset.addSeries(seriesLD);
 
         // Generate the graph
@@ -150,8 +181,6 @@ public class DataFrame extends JFrame {
         return new ChartPanel(chart);
     }
 
-
-
     private JPanel goal(MlModel mlm) {
 
         XYSeries seriesGoal = new XYSeries("Goal");
@@ -176,7 +205,6 @@ public class DataFrame extends JFrame {
 
         return new ChartPanel(chart);
     }
-
 
     private JPanel door(MlModel mlm) {
 
@@ -204,48 +232,4 @@ public class DataFrame extends JFrame {
 
         return new ChartPanel(chart);
     }
-
-
-    /**
-     * Init all settings for main frame
-     */
-    private void initFrame() {
-        this.setTitle(AppContext.INSTANCE.getProperty("guiTitle"));
-        this.setSize(
-                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeWidth")),
-                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeHeight")));
-        this.setMinimumSize(new Dimension(
-                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeMinimumWidth")),
-                Integer.parseInt(AppContext.INSTANCE.getProperty("guiSizeMinimumHeight"))));
-
-        this.setLocationRelativeTo(null);
-    }
-
-    private JPanel stepChart(MlModel mlm) {
-
-        XYSeries series = new XYSeries("XYGraph");
-        for (int i=0; i<mlm.getNbRuns(); i++) {
-            series.add(i, mlm.getRunSteps(i));
-        }
-
-
-        // Add the series to your data set
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
-
-        // Generate the graph
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "Steps evolution", // Title
-                "Maze solver #", // x-axis Label
-                "# steps", // y-axis Label
-                dataset, // Dataset
-                PlotOrientation.VERTICAL, // Plot Orientation
-                true, // Show Legend
-                true, // Use tooltips
-                false // Configure chart to generate URLs?
-        );
-
-        return new ChartPanel(chart);
-    }
-
 }
