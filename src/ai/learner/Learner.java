@@ -95,8 +95,7 @@ public class Learner implements Runnable, LearnerInt {
             }
 
             try {
-                s.doOneStep();
-                nbSteps++;
+                nbSteps += s.doOneStep();
                 System.out.print('.');
             } catch (Exception e) {
                 Log.logSevere("Error while executing maze solver next step : " + e.getMessage());
