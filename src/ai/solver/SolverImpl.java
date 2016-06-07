@@ -26,14 +26,10 @@ public class SolverImpl implements Solver {
 	private final int treshold;
 	private final int level;
 	private NodeDTO[] nodesWK;
+	private List<Action> computedPath;
+	private MazeDTO maze;
 
-	/*
-	 * GETTERS
-	 */
-	private int getKey(){
-		return this.key;
-	}	
-	
+
 	/**
      *
      * @param maze
@@ -51,14 +47,16 @@ public class SolverImpl implements Solver {
 		this.door_rwd = goals.getLoadOpenDoor();
 		this.key_rwd = goals.getLoadGrabKey();
 		this.goal_rwd = goals.getLoadReachGoal();
-
 		this.gamma = 0.5;
+
 		this.treshold = Math.min(60,maze.getSizex()*maze.getSizey());
 		this.pos = maze.getStartNode();
-		
 		this.pos.setUsefulNeighbour(this.pos.getNeighbours());
 		this.level = maze.getNbKey();
 		this.nodesWK = new NodeDTO[this.level];
+		this.maze = maze;
+		this.maze.setSolverkeys(new NodeDTO[this.level]);
+		this.computedPath = new ArrayList<Action>();
     }
 
     @Override
@@ -67,10 +65,25 @@ public class SolverImpl implements Solver {
     }
 
     @Override
-    public int doOneStep() throws Exception{
-    	try {
+    public Action doOneStep() throws Exception{
+		if (this.computedPath.isEmpty()) computePath();
+
+		NodeDTO d = computedPath.get(0).getDestination();
+		Action a = computedPath.get(0);
+		computedPath.remove(0);
+
+		if (a.getTypeAction() == typeAction.DROP_KEY) maze.removeSolverkey(0);
+		else if (a.getTypeAction() == typeAction.TAKE_KEY) maze.addSolverkey(pos, 0);
+		else maze.setSolverPosition(d);
+
+		return a;
+	}
+    
+
+	private void computePath() throws Exception{
+		try {
 			MyResult res = bestMove(this.pos, this.pos, 0, new ArrayList<Action>(), this.nodesWK, this.key, new HashSet<NodeDTO>());
-			
+
 			//assure the good disposition of keys
 			for (NodeDTO node : res.getKeyRemoved()){
 				if (node != null) node.setHasKey(0);
@@ -80,16 +93,16 @@ public class SolverImpl implements Solver {
 				if (nodesWithKey[i] != null) nodesWithKey[i].setHasKey(i+1);
 			}
 			this.nodesWK = Arrays.copyOf(nodesWithKey, nodesWithKey.length);
-			
+
 			List<Action> path = res.getPath();
 			this.pos = path.get(path.size()-1).getDestination();
-			
+
 			this.key = res.getKey();
-    		
+
 			//We update the part of the maze we know
 			if (this.pos.getUsefulNeighbours().isEmpty()){
 				this.pos.setUsefulNeighbour(this.pos.getNeighbours());
-			}			
+			}
 
 //    		double reward = res.getReward();
 //    		System.out.print("\nreward = "+ reward+ ", path : ");
@@ -97,20 +110,17 @@ public class SolverImpl implements Solver {
 //				System.out.print(path.get(i) + ", ");
 //			}
 //			System.out.print("\n");
-			return path.size();
+			this.computedPath = path;
 		} catch (Exception e) {
 			throw e;
 		}
-    }
-    
-    
+	}
+
     private MyResult bestMove(NodeDTO node, NodeDTO from, double reward, 
     		List<Action> path, NodeDTO[] nodesKey, int myKey, Set<NodeDTO> keyRemoved) throws Exception{
     	List<Action> new_path = new ArrayList<Action>(path);
-    	new_path.add(new Move(node));
-		if (node.getPosx()==5 && node.getPosy()==5 && myKey==0){
-			System.out.print("");
-		}
+    	new_path.add(new Action(typeAction.MOVE, node, 0));
+
     	NodeDTO[] nodesWithKey = Arrays.copyOf(nodesKey, nodesKey.length);
     	
 		List<NodeDTO> neighbours = node.getNeighbours();
@@ -183,14 +193,10 @@ public class SolverImpl implements Solver {
 					node.setHasKey(0);
 					myKey = k;
 					nodesWithKey[k-1] = null;
-					new_path.add(KeyAction.TAKE_KEY);
+					new_path.add(new Action(typeAction.TAKE_KEY, node, k));
 					double new_reward = reward+key_rwd*Math.pow(gamma, path.size());
 					keyRemoved.add(node);
 
-					
-		    		if (node.getPosx()==5 && node.getPosy()==5 && myKey==0){
-		    			System.out.print("");
-		    		}
 					
 					MyResult best_res2 = bestDirection(node, node, nodesWithKey, myKey, new_reward, new_path, deadend, neighbours, keyRemoved);
 					double max2 = best_res2.getReward();
@@ -223,8 +229,8 @@ public class SolverImpl implements Solver {
 					//dropKey();
 					node.setHasKey(myKey);
 					nodesWithKey[node.getHasKey()-1] = node;
+					new_path.add(new Action(typeAction.DROP_KEY, node, myKey));
 					myKey = 0;
-					new_path.add(KeyAction.DROP_KEY);
 
 					MyResult best_res2 = bestDirection(node, from, nodesWithKey, myKey, reward, new_path, deadend, neighbours, keyRemoved);
 					double max2 = best_res2.getReward();
@@ -252,15 +258,15 @@ public class SolverImpl implements Solver {
     private MyResult jumpToKey(int j, NodeDTO[] nodesWithKey, NodeDTO node, List<Action> path,
     		int myKey, double reward, Set<NodeDTO>keyRemoved) throws Exception{
     	if (nodesWithKey[j] != null
-				&& nodesWithKey[j].equals(node) == false 
-				&& node.getNeighbours().contains(nodesWithKey[j])==false){
+				&& !nodesWithKey[j].equals(node)
+				&& !node.getNeighbours().contains(nodesWithKey[j])){
 			
     		List<Action>new_path = new ArrayList<Action>(path);
     		List<Action> p = pathFromTo(node, nodesWithKey[j], new ArrayList<Action>(), node);
     		
 			new_path.addAll(p);
 			double new_reward = reward+key_rwd*Math.pow(gamma, new_path.size());
-			new_path.add(KeyAction.TAKE_KEY);
+			new_path.add(new Action(typeAction.TAKE_KEY, node, j+1));
 
     		if (node.getPosx()==5 && node.getPosy()==5 && myKey==0){
     			System.out.print("");
@@ -273,7 +279,7 @@ public class SolverImpl implements Solver {
 			for (int i = p.size()-2; i>=0; i--){
 				new_path.add(p.get(i));				
 			}
-			new_path.add(new Move(node));
+			new_path.add(new Action(typeAction.MOVE, node, 0));
 			
 			int nodeKey = node.getHasKey();
 			MyResult res = bestMove(node, node, new_reward, new_path, nodesWithKey, myKey, keyRemoved);
@@ -292,7 +298,7 @@ public class SolverImpl implements Solver {
     private List<Action> pathFromTo(NodeDTO start, NodeDTO end, List<Action> path, NodeDTO from){
     	List<Action> new_path = new ArrayList<Action>(path);
     	if (start != from){
-    		new_path.add(new Move(start));
+    		new_path.add(new Action (typeAction.MOVE, start, 0));
     	}
     	if (start==end) {
     		return new_path;
@@ -347,8 +353,8 @@ public class SolverImpl implements Solver {
 					//dropKey();
 					node.setHasKey(myKey);
 					nodesWithKey[node.getHasKey()-1] = node;
+					new_path.add(new Action(typeAction.DROP_KEY, node, myKey));
 					myKey = 0;
-					new_path.add(KeyAction.DROP_KEY);
 				}
 				door[next_node.getIsDoor()-1] = true;
 			}
@@ -406,7 +412,7 @@ public class SolverImpl implements Solver {
     /*
      * class just to return the reward and the path in bestMove()
      */
-    final class MyResult {
+    final private class MyResult {
         private double reward;
         private List<Action> path;
         private NodeDTO[] nodesWithKey;
@@ -421,25 +427,25 @@ public class SolverImpl implements Solver {
             this.keyRemoved = remove;
         }
 
-        public double getReward() {
+        double getReward() {
             return this.reward;
         }
 
-		public void setReward(double r) { this.reward = r; }
+		void setReward(double r) { this.reward = r; }
 
-        public List<Action> getPath() {
+        List<Action> getPath() {
             return this.path;
         }
 
-        public NodeDTO[] getNodesWithKey(){
+        NodeDTO[] getNodesWithKey(){
         	return this.nodesWithKey;
         }
 
-        public int getKey(){
+        int getKey(){
         	return this.key;
         }
         
-        public Set<NodeDTO> getKeyRemoved(){
+        Set<NodeDTO> getKeyRemoved(){
         	return this.keyRemoved;
         }
         @Override
@@ -730,11 +736,11 @@ public class SolverImpl implements Solver {
     	long startTime = System.currentTimeMillis();
 
     	
-    	for (int j=0; j< 100; j++){
+    	for (int j=0; j< 300; j++){
     		MazeDTO maze = null;
     		while (maze == null){
     			try{
-    				Generator gen = new Generator(7,7,3);
+    				Generator gen = new Generator(10,10,4);
     				maze = gen.generate();
     		    	if (maze.getNbdoor()>maze.getNbKey()) maze=null;
     			}catch (Exception e){
@@ -748,7 +754,7 @@ public class SolverImpl implements Solver {
 	        System.out.print("door :" + goals.getLoadOpenDoor() + "\n");
 	        System.out.print("goal :" + goals.getLoadReachGoal() + "\n\n");
 
-			for (int k = 0; k<100;k++) {
+			for (int k = 0; k<1;k++) {
 
 				SolverImpl s = new SolverImpl(maze, goals);
 
@@ -756,7 +762,7 @@ public class SolverImpl implements Solver {
 				int n = 0;
 				while (s.isSolved() == false && i < 100) {
 					i++;
-					n += s.doOneStep();
+					s.doOneStep();
 
 					long endTime = System.currentTimeMillis();
 					long totalTime_m = endTime - startTime;

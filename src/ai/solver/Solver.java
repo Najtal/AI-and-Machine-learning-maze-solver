@@ -7,6 +7,6 @@ public interface Solver {
 
     boolean isSolved();
 
-    int doOneStep() throws Exception;
+    Action doOneStep() throws Exception;
 
 }
