@@ -4,11 +4,13 @@ import model.MlModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 /**
  * Created by jvdur on 13/05/2016.
  */
-public class DataCanvas extends JPanel {
+public class DataCanvas extends JPanel implements ComponentListener {
 
 
 
@@ -23,6 +25,7 @@ public class DataCanvas extends JPanel {
     public DataCanvas(MlModel mlm, JFrame frame) {
         this.mlm = mlm;
         this.frame = frame;
+
         this.spaceBtwPositions = Math.max(1, (frame.getContentPane().getSize().getWidth()-AXIS_BORDER*4)/mlm.getNbRuns());
         this.heightCoefficient = Math.max(1, (frame.getContentPane().getSize().getWidth()-2*AXIS_BORDER) / mlm.getMaxNbSteps());
     }
@@ -39,7 +42,7 @@ public class DataCanvas extends JPanel {
 
         int nbSteps = 0;
         for (int i=0; i<mlm.getNbRuns(); i++) {
-            if (i>0) {
+            if (i>1) {
                 g.drawLine((int)(AXIS_BORDER * 2 + spaceBtwPositions * i), (int) (nbSteps * heightCoefficient),
                         (int) (AXIS_BORDER * 2 + spaceBtwPositions * i +1), (int)(mlm.getRunSteps(i) * heightCoefficient));
             }
@@ -53,4 +56,26 @@ public class DataCanvas extends JPanel {
         return frame.getContentPane().getSize();
     }
 
+    @Override
+    public void componentResized(ComponentEvent e) {
+        this.spaceBtwPositions = Math.max(1, (frame.getContentPane().getSize().getWidth()-AXIS_BORDER*4)/mlm.getNbRuns());
+        this.heightCoefficient = Math.max(1, (frame.getContentPane().getSize().getWidth()-2*AXIS_BORDER) / mlm.getMaxNbSteps());
+        repaint();
+        revalidate();
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
+    }
 }

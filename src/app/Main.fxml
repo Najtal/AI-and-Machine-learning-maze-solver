@@ -23,7 +23,7 @@
       </MenuBar>
       <TabPane prefHeight="622.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Home">
+          <!--<Tab text="Home">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -55,7 +55,7 @@
                      </children>
                   </AnchorPane>
             </content>
-          </Tab>
+          </Tab>-->
           <Tab text="Settings">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

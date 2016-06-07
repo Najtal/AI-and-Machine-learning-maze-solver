@@ -2,6 +2,12 @@ package gui.data;
 
 import app.AppContext;
 import model.MlModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,9 +47,35 @@ public class DataFrame extends JFrame {
     }
 
     private void initCanvas(MlModel mlm) {
-        canvas = new DataCanvas(mlm, this);
+
+        XYSeries series = new XYSeries("XYGraph");
+        for (int i=0; i<mlm.getNbRuns(); i++) {
+            series.add(i, mlm.getRunSteps(i));
+        }
+
+
+        // Add the series to your data set
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+
+        // Generate the graph
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Steps evolution", // Title
+                "Maze solver #", // x-axis Label
+                "# steps", // y-axis Label
+                dataset, // Dataset
+                PlotOrientation.VERTICAL, // Plot Orientation
+                true, // Show Legend
+                true, // Use tooltips
+                false // Configure chart to generate URLs?
+        );
+
+        ChartPanel cp = new ChartPanel(chart);
+
+        this.add(cp, BorderLayout.CENTER);
+        /*canvas = new DataCanvas(mlm, this);
         JScrollPane jsp = new JScrollPane(canvas, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.add(jsp, BorderLayout.CENTER);
+        this.add(jsp, BorderLayout.CENTER);*/
     }
 
 }

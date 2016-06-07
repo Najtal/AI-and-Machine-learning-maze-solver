@@ -6,7 +6,6 @@ import ai.algorithm.LearnAlgorithm;
 import ai.maze.Generator;
 import app.AppContext;
 import exception.FatalException;
-import exception.MazeException;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
 import ucc.MazeUCCImpl;
@@ -74,7 +73,7 @@ public class MazeLearningModel {
             try {
                 mazeOmniscient = gm.generate();
                 break;
-            } catch (MazeException me) {
+            } catch (Exception e) {
                 if (trials == trialsMax) {
                     Log.logSevere("Could not create the maze, parameters are to restrictive !");
                     throw new FatalException("Could not create the maze, parameters are to restrictive !");
