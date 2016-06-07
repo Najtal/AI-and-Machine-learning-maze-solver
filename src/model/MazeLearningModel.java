@@ -5,7 +5,6 @@ import ai.algorithm.LARandomSearch;
 import ai.algorithm.LearnAlgorithm;
 import ai.maze.Generator;
 import app.AppContext;
-import bizz.GoalLoadImpl;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
 import ucc.MazeUCCImpl;
@@ -40,7 +39,7 @@ public class MazeLearningModel {
     private void setAlgorithm() {
         switch(glm.getAlgorithm()) {
             case RANDOM_SEARCH :
-                this.algo = new LARandomSearch(new GoalLoadImpl(10, 20, 30, 200, 1));
+                this.algo = new LARandomSearch();
                 break;
             case GRID_SEARCH :
                 this.algo = new LAGridSearch();
@@ -120,5 +119,9 @@ public class MazeLearningModel {
 
     public int getBestSteps() {
         return bestSteps;
+    }
+
+    public void setMazeNinja(MazeDTO mazeNinja) {
+        this.mazeNinja = mazeNinja;
     }
 }

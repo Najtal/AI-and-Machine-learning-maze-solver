@@ -25,6 +25,10 @@ public class MazeCanvas  extends JPanel {
         return new Dimension(frame.getWidth(), frame.getHeight());
     }
 
+    public void setMaze(MazeDTO maze) {
+        this.maze = maze;
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -38,11 +42,11 @@ public class MazeCanvas  extends JPanel {
         for(int i=0; i<maze.getSizex(); i++){
             for(int j=0; j<maze.getSizey(); j++) {
 
-                if(!isOmniscient && maze.getMazeStructure()[j][i] == 0) {
+               /* if(!isOmniscient && maze.getMazeStructure()[j][i] == 0) {
                     if (j != maze.getStartNode().getPosy() || i != maze.getStartNode().getPosx()) {
                         g.fillRect(j * boxWidth, i * boxHeight, boxWidth, boxHeight);
                     }
-                } else {
+                } else {*/
 
                     int val = maze.getMazeStructure()[j][i];
                     // Draw left line
@@ -54,7 +58,7 @@ public class MazeCanvas  extends JPanel {
                         g.drawLine(j*boxWidth, i*boxHeight, (j+1)*boxWidth, i*boxHeight);
                     }
 
-                }
+                //}
             }
         }
 
@@ -73,19 +77,38 @@ public class MazeCanvas  extends JPanel {
         }
 
         // Draw the keys
-        for (NodeDTO key : maze.getKeyPosition().values()) {
-            String nbDoor = key.getHasKey()+"";
+        if(isOmniscient) {
+            for (NodeDTO key : maze.getKeyPosition().values()) {
+                String nbDoor = key.getHasKey()+"";
 
-            g.setColor(Color.GREEN);
-            g.fillOval(key.getPosy()*boxWidth, key.getPosx()*boxHeight,boxWidth, boxHeight);
+                g.setColor(Color.GREEN);
+                g.fillOval(key.getPosy()*boxWidth, key.getPosx()*boxHeight,boxWidth, boxHeight);
 
-            g.setColor(Color.WHITE);
-            g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
+                g.setColor(Color.WHITE);
+                g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
+            }
+        } else {
+            for (NodeDTO key : maze.getSolverkeys()) {
+                if(key == null)
+                    continue;
+                String nbDoor = key.getHasKey()+"";
+
+                g.setColor(Color.GREEN);
+                g.fillOval(key.getPosy()*boxWidth, key.getPosx()*boxHeight,boxWidth, boxHeight);
+
+                g.setColor(Color.WHITE);
+                g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
+            }
         }
 
-        // Draw Start
-        g.setColor(Color.RED);
-        g.fillOval(maze.getStartNode().getPosy()*boxWidth, maze.getStartNode().getPosx()*boxHeight,boxWidth, boxHeight);
+        // Draw Position
+        if(isOmniscient) {
+            g.setColor(Color.RED);
+            g.fillOval(maze.getStartNode().getPosy()*boxWidth, maze.getStartNode().getPosx()*boxHeight,boxWidth, boxHeight);
+        } else {
+            g.setColor(Color.RED);
+            g.fillOval(maze.getSolverPosition().getPosy()*boxWidth, maze.getSolverPosition().getPosx()*boxHeight,boxWidth, boxHeight);
+        }
 
         // Draw the Goal
         if(maze.getGoalNode() != null) {

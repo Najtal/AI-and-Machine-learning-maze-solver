@@ -38,15 +38,15 @@ public class Learner implements Runnable, LearnerInt {
 
             // learn maze
             learnMaze();
-
-            // TODO Analyse results from MazeLearningModel
-
+            System.out.println("Best number of step: " + mlm.getBestSteps());
+            System.out.println("Goals are : " + mlm.getBestGoals().toString());
         }
-
-        System.out.println("Best number of step: " + mlm.getBestSteps());
-        System.out.println("Goals are : " + mlm.getBestGoals().toString());
-
     }
+
+    public MazeLearningModel getMazeLearningModel() {
+        return mlm;
+    }
+
 
     /**
      * Will execute and solve the maze the amount of time defined
@@ -64,6 +64,7 @@ public class Learner implements Runnable, LearnerInt {
             // TODO : The solver should take a ninja maze and not a ominshient maze
 
             MazeDTO maze = mlm.getMazeOmniscient();
+            mlm.setMazeNinja(maze);
             MazeUCC.INSTANCE.clean(maze);
 
             Solver s = new SolverImpl(maze, goals);
@@ -71,7 +72,7 @@ public class Learner implements Runnable, LearnerInt {
             // Learn from maze
             int nbStepsNeeded = executeMaze(s);
 
-            System.out.println("Maze " + i + ": GOALS: "+goals.toString()+" STEPS: "+nbStepsNeeded);
+            //System.out.println("Maze " + i + ": GOALS: "+goals.toString()+" STEPS: "+nbStepsNeeded);
 
             mlm.setNewBestMvmt(nbStepsNeeded, goals);
         }
@@ -102,6 +103,10 @@ public class Learner implements Runnable, LearnerInt {
                 e.printStackTrace();
             }
 
+            if (glm.getNinjaFrame() != null) {
+                glm.getNinjaFrame().actionPerformed(null);
+            }
+
             if (s.isSolved()) {
                 System.out.println();
                 Log.logFine("Maze solved");
@@ -114,28 +119,5 @@ public class Learner implements Runnable, LearnerInt {
         return 0;
     }
 
-    @Override
-    public void pause() {
-        // TODO
-    }
-
-    @Override
-    public void start() {
-        // TODO
-    }
-
-    @Override
-    public void makeOneStep() {
-        // TODO
-    }
-
-    @Override
-    public void stop() {
-        // TODO
-    }
-
-    public MazeLearningModel getMazeLearningModel() {
-        return mlm;
-    }
 }
 

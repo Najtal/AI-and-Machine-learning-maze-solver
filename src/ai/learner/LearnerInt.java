@@ -7,14 +7,6 @@ import model.MazeLearningModel;
  */
 public interface LearnerInt {
 
-    void pause();
-
-    void start();
-
-    void makeOneStep();
-
-    void stop();
-
     MazeLearningModel getMazeLearningModel();
 
 }

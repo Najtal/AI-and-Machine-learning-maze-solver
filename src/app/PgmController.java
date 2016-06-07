@@ -53,6 +53,15 @@ public class PgmController {
     public void initialize() {
         setMLalgo.getSelectionModel().selectFirst();
         exMode.getSelectionModel().selectFirst();
+
+        exSpeed.setMin(100);
+        exSpeed.setMax(1000);
+        exSpeed.setValue(500);
+        exSpeed.setShowTickLabels(true);
+        exSpeed.setShowTickMarks(true);
+        exSpeed.setMajorTickUnit(100);
+        exSpeed.setMinorTickCount(100);
+        exSpeed.setBlockIncrement(100);
     }
 
     /**
@@ -69,6 +78,10 @@ public class PgmController {
 
         int nbmaze = Integer.parseInt(setNbmaze.getText());
         int itPerMaze = Integer.parseInt(setItpermaze.getText());
+        int speed = (int)exSpeed.getValue();
+
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(actionEvent -> System.exit(1));
 
         // SET ALGO
         String algo = (String) setMLalgo.getValue();
@@ -90,9 +103,6 @@ public class PgmController {
             case "Full speed" :
                 rMode = RunningMode.FULL_SPEED;
                 break;
-            case "Maze by maze" :
-                rMode = RunningMode.MAZE_BY_MAZE;
-                break;
             case "Step by step auto" :
                 rMode = RunningMode.STEP_BY_STEP_AUTO;
                 break;
@@ -104,52 +114,48 @@ public class PgmController {
                 +"\n\tminSize: "+minSize+"\n\tmaxSize: "+maxSize
                 +"\n\tminDoor: "+minDoor+"\n\tmaxDoor: "+maxDoor
                 +"\n\tnbmaze: "+nbmaze+"\n\titPerMaze: "+itPerMaze
-                +"\n\talgo: "+algo);
+                +"\n\talgo: "+algo+"\n\tSpeed: "+speed+"\n\tRunning mode: "+rMode);
 
         startButtonIsStart = !startButtonIsStart;
+        glm.setrMode(rMode);
+        glm.setAutoRunningSpeed(speed);
 
+        startButton.setText("Generating...");
+        new Thread() {
+            // runnable for that thread
+            public void run() {
 
-        // STARTING OF THE PROCESS !
-        if(!startButtonIsStart) {
-            startButton.setText("Start");
-            glm.setrStatus(RunningStatus.PAUSED);
-        } else {
-            startButton.setText("Generating...");
-            new Thread() {
-                // runnable for that thread
-                public void run() {
+                // Create and Init a Global learning model
+                glm = new GlobalLearningModel(
+                        nbmaze, itPerMaze,
+                        minSize, minSize, maxSize, maxSize,
+                        minDoor, maxDoor, rModeCopy, laCopy);
 
-                    // Create and Init a Global learning model
-                    glm = new GlobalLearningModel(
-                            nbmaze, itPerMaze,
-                            minSize, minSize, maxSize, maxSize,
-                            minDoor, maxDoor, rModeCopy, laCopy);
+                // Create Learner
+                Learner learner = new Learner(glm);
 
-                    // Create Learner
-                    Learner learner = new Learner(glm);
+                // Create a Learner
+                glm.setRunningThread(learner);
 
-                    // Create a Learner
-                    glm.setRunningThread(learner);
+                // Run it !
+                glm.setrStatus(RunningStatus.RUNNING);
+                learner.run();
 
-                    // Run it !
-                    glm.setrStatus(RunningStatus.RUNNING);
-                    learner.run();
-
-                }
-            }.start();
-
-            while(glm == null) {
             }
+        }.start();
 
-            // ACTIVATE BUTTONS
-            omnMazeButton.setDisable(false);
-
-            if (rMode == RunningMode.STEP_BY_STEP_AUTO)
-                ninMazeButton.setDisable(false);
-
-            startButton.setText("Stop");
-
+        while(glm == null) {
         }
+
+        // ACTIVATE BUTTONS
+        omnMazeButton.setDisable(false);
+
+        if (rMode == RunningMode.STEP_BY_STEP_AUTO)
+            ninMazeButton.setDisable(false);
+
+        startButton.setText("Stop");
+
+
 
     }
 
@@ -170,7 +176,7 @@ public class PgmController {
     @FXML
     private void butExSolver(final ActionEvent event)
     {
-        new MazeFrame(glm.getRunningThread().getMazeLearningModel().getMazeNinja(), "maze", false);
+        glm.setNinjaFrame(new MazeFrame(glm.getRunningThread().getMazeLearningModel().getMazeNinja(), "maze", false));
     }
 
     /**

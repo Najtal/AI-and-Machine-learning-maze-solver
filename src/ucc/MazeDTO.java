@@ -49,4 +49,13 @@ public interface MazeDTO {
 
     void setGoalNode(NodeDTO goalNode);
 
+    NodeDTO getSolverPosition();
+
+    void setSolverPosition(NodeDTO solverPosition);
+
+    NodeDTO[] getSolverkeys();
+
+    void setSolverkeys(NodeDTO[] solverkeys);
+
+
 }

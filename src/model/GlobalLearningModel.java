@@ -1,10 +1,10 @@
 package model;
 
 import ai.learner.Learner;
-import app.AppContext;
 import constant.LearningAlgorithm;
 import constant.RunningMode;
 import constant.RunningStatus;
+import gui.maze.MazeFrame;
 
 /**
  * Created by jvdur on 09/05/2016.
@@ -20,18 +20,19 @@ public class GlobalLearningModel {
     private int mMinLevel;
     private int mMaxLevel;
 
-    private RunningMode rMode;
-    private RunningStatus rStatus;
+    private static RunningMode rMode;
+    private static RunningStatus rStatus;
 
     private Learner runningThread;
     private boolean done;
-    private int autoRunningSpeed;
+    private static int autoRunningSpeed;
     private LearningAlgorithm algorithm;
     /*
      *  0 : wait for gui action
      *  1 : is processing
      */
     private boolean solverProcessingState;
+    private MazeFrame ninjaFrame;
 
     public GlobalLearningModel(int nbMaze, int nbIterationPerMaze,
                                 int mXmin, int mYmin, int mXmax, int mYmax,
@@ -46,7 +47,7 @@ public class GlobalLearningModel {
         this.mMinLevel = mMinLevel;
         this.mMaxLevel = mMaxLevel;
         this.rMode = rMode;
-        this.autoRunningSpeed = Integer.parseInt(AppContext.INSTANCE.getProperty("autoRunningSpeed"));
+        this.rStatus = RunningStatus.RUNNING;
         this.setAlgorithm(algo);
 
     }
@@ -96,12 +97,12 @@ public class GlobalLearningModel {
         return runningThread;
     }
 
-    public void setrMode(RunningMode rMode) {
-        this.rMode = rMode;
+    public static void setrMode(RunningMode rMode) {
+        rMode = rMode;
     }
 
-    public void setrStatus(RunningStatus rStatus) {
-        this.rStatus = rStatus;
+    public static void setrStatus(RunningStatus rStatus) {
+        rStatus = rStatus;
     }
 
     public boolean isDone() {
@@ -134,5 +135,17 @@ public class GlobalLearningModel {
 
     public void setSolverProcessingState(boolean solverProcessingState) {
         this.solverProcessingState = solverProcessingState;
+    }
+
+    public static void setAutoRunningSpeed(int autoRunningSpeedp) {
+        autoRunningSpeed = autoRunningSpeedp;
+    }
+
+    public void setNinjaFrame(MazeFrame ninjaFrame) {
+        this.ninjaFrame = ninjaFrame;
+    }
+
+    public MazeFrame getNinjaFrame() {
+        return ninjaFrame;
     }
 }

@@ -27,7 +27,13 @@ public class SolverImpl implements Solver {
 	private final int level;
 	private NodeDTO[] nodesWK;
 
-
+	/*
+	 * GETTERS
+	 */
+	private int getKey(){
+		return this.key;
+	}	
+	
 	/**
      *
      * @param maze
@@ -79,11 +85,11 @@ public class SolverImpl implements Solver {
 			this.pos = path.get(path.size()-1).getDestination();
 			
 			this.key = res.getKey();
-
+    		
 			//We update the part of the maze we know
 			if (this.pos.getUsefulNeighbours().isEmpty()){
 				this.pos.setUsefulNeighbour(this.pos.getNeighbours());
-			}
+			}			
 
 //    		double reward = res.getReward();
 //    		System.out.print("\nreward = "+ reward+ ", path : ");
@@ -272,10 +278,6 @@ public class SolverImpl implements Solver {
 			int nodeKey = node.getHasKey();
 			MyResult res = bestMove(node, node, new_reward, new_path, nodesWithKey, myKey, keyRemoved);
 			node.setHasKey(nodeKey);
-			List<Action> res_p = res.getPath();
-			if (res_p.get(res_p.size()-1).getDestination()==null){
-				res.setReward(-1);
-			}
 			return res;
 			}
         else {
@@ -410,8 +412,6 @@ public class SolverImpl implements Solver {
         public double getReward() {
             return this.reward;
         }
-
-		public void setReward(double r) { this.reward = r; }
 
         public List<Action> getPath() {
             return this.path;
@@ -712,52 +712,48 @@ public class SolverImpl implements Solver {
      * @throws Exception 
      */
     public static void main(String args[]) throws Exception {
+    	
+    	long startTime = System.currentTimeMillis();
 
-		long startTime = System.currentTimeMillis();
+    	
+    	for (int j=0; j< 300; j++){
+    		MazeDTO maze = null;
+    		while (maze == null){
+    			try{
+    				Generator gen = new Generator(12,12,7);
+    				maze = gen.generate();
+    		    	if (maze.getNbdoor()>maze.getNbKey()) maze=null;
+    			}catch (Exception e){
+    				continue;
+    			}
+    		}
+	    	//maze = test6();
+	        GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
+	        System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
+	        System.out.print("key :" + goals.getLoadGrabKey() + "\n");
+	        System.out.print("door :" + goals.getLoadOpenDoor() + "\n");
+	        System.out.print("goal :" + goals.getLoadReachGoal() + "\n\n");
+	        SolverImpl s = new SolverImpl(maze, goals);
+	        
+	        int i = 0;
+	        int n = 0;
+	        while (s.isSolved() == false && i<100){
+	        	i++;
+	        	n += s.doOneStep();
+	        
+	            System.out.print("key : " + s.getKey() + "\n");
 
-
-		try {
-			for (int j=0; j<3000; j++) {
-				MazeDTO maze = null;
-				while (maze == null) {
-					try {
-						Generator gen = new Generator(7, 7, 3);
-						maze = gen.generate();
-						if (maze.getNbdoor() > maze.getNbKey()) maze = null;
-					} catch (Exception e) {
-						continue;
-					}
-				}
-				//maze = test6();
-				GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
-				System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
-				System.out.print("key :" + goals.getLoadGrabKey() + "\n");
-				System.out.print("door :" + goals.getLoadOpenDoor() + "\n");
-				System.out.print("goal :" + goals.getLoadReachGoal() + "\n\n");
-				SolverImpl s = new SolverImpl(maze, goals);
-
-				int i = 0;
-				int n = 0;
-				while (s.isSolved() == false && i < 100) {
-					i++;
-					n += s.doOneStep();
-
-					//System.out.print("key : " + s.getKey() + "\n");
-
-					long endTime = System.currentTimeMillis();
-					long totalTime_m = endTime - startTime;
-					if (totalTime_m > 1000000000) break;
-				}
-				if (s.isSolved()) {
-					long endTime = System.currentTimeMillis();
-					long totalTime_m = endTime - startTime;
-					System.out.print("\nYOUHOUOU ! in " + i + " big steps and " + n + " little steps (" + totalTime_m + "ms)\n");
-				}
-				System.out.print("\n" + j + "\n");
-			}
-		}catch (Exception e){
-			throw e;
-		}
+	        	long endTime = System.currentTimeMillis();
+	        	long totalTime_m = endTime - startTime;
+	        	if (totalTime_m > 1000000) break;
+	        }
+	        if (s.isSolved()){
+	        	long endTime = System.currentTimeMillis();
+	        	long totalTime_m = endTime - startTime;
+	        	System.out.print("\nYOUHOUOU ! in "+i+" big steps and "+n+" little steps ("+totalTime_m+"ms)\n");
+	        }
+	        System.out.print("\n"+j+"\n");
+    	}
 
         long endTime = System.currentTimeMillis();
     	long totalTime_m = endTime - startTime;

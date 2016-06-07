@@ -23,6 +23,9 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	private int sizex;
 	private int sizey;
 
+	private NodeDTO solverPosition;
+	private NodeDTO[] solverkeys;
+
 
 	/**
 	 * Maze for ninja (they only know the startpoint
@@ -157,5 +160,21 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 
 	public void setGoalNode(NodeDTO goalNode) {
 		this.goalNode = goalNode;
+	}
+
+	public NodeDTO[] getSolverkeys() {
+		return solverkeys;
+	}
+
+	public void setSolverkeys(NodeDTO[] solverkeys) {
+		this.solverkeys = solverkeys;
+	}
+
+	public NodeDTO getSolverPosition() {
+		return solverPosition;
+	}
+
+	public void setSolverPosition(NodeDTO solverPosition) {
+		this.solverPosition = solverPosition;
 	}
 }

@@ -9,7 +9,6 @@ import ucc.GoalDTO;
 public class LARandomSearch extends LearnAlgorithm {
 
 
-    private GoalDTO startGoals;
     private final static int MIN = 1;
     private final static int MAX = 200;
 
@@ -17,8 +16,7 @@ public class LARandomSearch extends LearnAlgorithm {
     private GoalDTO bestGoals;
     private GoalDTO lastGoals;
 
-    public LARandomSearch(GoalDTO startGoals) {
-        this.startGoals = startGoals;
+    public LARandomSearch() {
         this.bestCost = Integer.MAX_VALUE;
     }
 
