@@ -20,7 +20,7 @@ public class Action {
 		return this.destination;
 	}
 
-	public int getKey() { return this.getKey(); }
+	public int getKey() { return this.key; }
 
 	public String toString() {
 		if (TypeAction == typeAction.MOVE) return "Move to " + destination;

@@ -53,10 +53,11 @@ public class SolverImpl implements Solver {
 		this.pos = maze.getStartNode();
 		this.pos.setUsefulNeighbour(this.pos.getNeighbours());
 		this.level = maze.getNbKey();
-		this.nodesWK = new NodeDTO[this.level];
+		this.nodesWK = new NodeDTO[this.level+1];
 		this.maze = maze;
 		this.maze.setSolverkeys(new NodeDTO[this.level]);
 		this.computedPath = new ArrayList<Action>();
+        this.computedPath.add(new Action(typeAction.MOVE, this.pos, 0));
     }
 
     @Override
@@ -66,14 +67,14 @@ public class SolverImpl implements Solver {
 
     @Override
     public Action doOneStep() throws Exception{
-		if (this.computedPath.isEmpty()) computePath();
+        computedPath.remove(0);
+		if (this.computedPath.isEmpty()) computePath();//System.out.print(computedPath);
 
 		NodeDTO d = computedPath.get(0).getDestination();
 		Action a = computedPath.get(0);
-		computedPath.remove(0);
 
-		if (a.getTypeAction() == typeAction.DROP_KEY) maze.removeSolverkey(0);
-		else if (a.getTypeAction() == typeAction.TAKE_KEY) maze.addSolverkey(pos, 0);
+		if (a.getTypeAction() == typeAction.DROP_KEY) maze.addSolverkey(a.getDestination(), a.getKey());
+		else if (a.getTypeAction() == typeAction.TAKE_KEY) maze.removeSolverkey(a.getKey());
 		else maze.setSolverPosition(d);
 
 		return a;
@@ -356,6 +357,7 @@ public class SolverImpl implements Solver {
 					new_path.add(new Action(typeAction.DROP_KEY, node, myKey));
 					myKey = 0;
 				}
+				int c = next_node.getIsDoor();
 				door[next_node.getIsDoor()-1] = true;
 			}
 		}
@@ -367,6 +369,10 @@ public class SolverImpl implements Solver {
 				if (from != neighbours.get(i) &&
 						node.getUsefulNeighbours().contains(neighbours.get(i))) {
 					if (neighbours.get(i).getCondition() == NodeCondition.NEED_KEY){
+						NodeDTO a = neighbours.get(i);
+						int b = neighbours.get(i).getIsDoor();
+						System.out.print(b);
+						System.out.print(door.length);
 						door[neighbours.get(i).getIsDoor()-1] = true;
 					}
 					if (neighbours.get(i).getCondition() == NodeCondition.NONE
@@ -754,7 +760,7 @@ public class SolverImpl implements Solver {
 	        System.out.print("door :" + goals.getLoadOpenDoor() + "\n");
 	        System.out.print("goal :" + goals.getLoadReachGoal() + "\n\n");
 
-			for (int k = 0; k<1;k++) {
+			for (int k = 0; k<2;k++) {
 
 				SolverImpl s = new SolverImpl(maze, goals);
 
@@ -762,7 +768,8 @@ public class SolverImpl implements Solver {
 				int n = 0;
 				while (s.isSolved() == false && i < 100) {
 					i++;
-					s.doOneStep();
+					Action a = s.doOneStep();
+                    //System.out.print(a+"\n");
 
 					long endTime = System.currentTimeMillis();
 					long totalTime_m = endTime - startTime;
