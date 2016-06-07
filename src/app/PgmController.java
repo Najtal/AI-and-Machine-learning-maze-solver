@@ -1,12 +1,15 @@
 package app;
 
 import ai.learner.Learner;
+import constant.LearningAlgorithm;
 import constant.RunningMode;
 import constant.RunningStatus;
 import gui.maze.MazeFrame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import model.GlobalLearningModel;
 
@@ -14,21 +17,25 @@ import model.GlobalLearningModel;
 
 public class PgmController {
 
-    @FXML
-    private TextField setMinsize = new TextField();
-    @FXML
-    private TextField setMaxsize = new TextField();
-    @FXML
-    private TextField setMindoor = new TextField();
-    @FXML
-    private TextField setMaxDoor = new TextField();
+    // SETTINGS TAB
+    @FXML private TextField setMinsize;
+    @FXML private TextField setMaxsize;
+    @FXML private TextField setMindoor;
+    @FXML private TextField setMaxDoor;
 
-    @FXML
-    private Button startButton = new Button("ExStart");
-    @FXML
-    private Button omnMazeButton = new Button("ExOmnimaze");
-    @FXML
-    private Button ninMazeButton = new Button("ExSolvermaze");
+    @FXML private TextField setNbmaze;
+    @FXML private TextField setItpermaze;
+    @FXML private ChoiceBox setMLalgo;
+
+    // EXECUTION TAB
+    @FXML private Button startButton;
+    @FXML private Button omnMazeButton;
+    @FXML private Button ninMazeButton;
+    @FXML private Slider exSpeed;
+    @FXML private Button btdata;
+    @FXML private ChoiceBox exMode;
+
+
 
     private boolean startButtonIsStart = false;
     private static GlobalLearningModel glm;
@@ -44,6 +51,8 @@ public class PgmController {
      */
     @FXML
     public void initialize() {
+        setMLalgo.getSelectionModel().selectFirst();
+        exMode.getSelectionModel().selectFirst();
     }
 
     /**
@@ -52,24 +61,69 @@ public class PgmController {
      */
     @FXML private void butStart(final ActionEvent event)
     {
+
+        int minSize = Integer.parseInt(setMinsize.getText());
+        int maxSize = Integer.parseInt(setMaxsize.getText());
+        int minDoor = Integer.parseInt(setMindoor.getText());
+        int maxDoor = Integer.parseInt(setMaxDoor.getText());
+
+        int nbmaze = Integer.parseInt(setNbmaze.getText());
+        int itPerMaze = Integer.parseInt(setItpermaze.getText());
+
+        // SET ALGO
+        String algo = (String) setMLalgo.getValue();
+        LearningAlgorithm la = null;
+        switch (algo) {
+            case "Random search" :
+                la = LearningAlgorithm.RANDOM_SEARCH;
+                break;
+            case "Grid search" :
+                la = LearningAlgorithm.GRID_SEARCH;
+                break;
+        }
+        final LearningAlgorithm laCopy = la;
+
+        // SET MODE
+        String mode = (String) exMode.getValue();
+        RunningMode rMode = null;
+        switch (mode) {
+            case "Full speed" :
+                rMode = RunningMode.FULL_SPEED;
+                break;
+            case "Maze by maze" :
+                rMode = RunningMode.MAZE_BY_MAZE;
+                break;
+            case "Step by step auto" :
+                rMode = RunningMode.STEP_BY_STEP_AUTO;
+                break;
+        }
+        final RunningMode rModeCopy = rMode;
+
+        // PRINT CONFIG
+        System.out.println("CONFIG:"
+                +"\n\tminSize: "+minSize+"\n\tmaxSize: "+maxSize
+                +"\n\tminDoor: "+minDoor+"\n\tmaxDoor: "+maxDoor
+                +"\n\tnbmaze: "+nbmaze+"\n\titPerMaze: "+itPerMaze
+                +"\n\talgo: "+algo);
+
         startButtonIsStart = !startButtonIsStart;
 
+
+        // STARTING OF THE PROCESS !
         if(!startButtonIsStart) {
             startButton.setText("Start");
-
             glm.setrStatus(RunningStatus.PAUSED);
-
         } else {
-
             startButton.setText("Generating...");
-
             new Thread() {
-
                 // runnable for that thread
                 public void run() {
 
                     // Create and Init a Global learning model
-                    glm = new GlobalLearningModel(1, 20, 6, 6, 6, 6, 2, 1, RunningMode.FULL_SPEED);
+                    glm = new GlobalLearningModel(
+                            nbmaze, itPerMaze,
+                            minSize, minSize, maxSize, maxSize,
+                            minDoor, maxDoor, rModeCopy, laCopy);
 
                     // Create Learner
                     Learner learner = new Learner(glm);
@@ -84,14 +138,16 @@ public class PgmController {
                 }
             }.start();
 
-            //while(glm == null) {
-            //}
+            while(glm == null) {
+            }
 
-        startButton.setText("Stop");
+            // ACTIVATE BUTTONS
+            omnMazeButton.setDisable(false);
 
-        omnMazeButton.setDisable(false);
-        ninMazeButton.setDisable(false);
+            if (rMode == RunningMode.STEP_BY_STEP_AUTO)
+                ninMazeButton.setDisable(false);
 
+            startButton.setText("Stop");
 
         }
 
@@ -126,14 +182,5 @@ public class PgmController {
     {
         System.out.println("couocou ! 4");
     }
-
-
-
-
-
-
-
-
-
 
 }

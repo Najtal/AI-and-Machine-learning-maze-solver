@@ -27,10 +27,16 @@ public class GlobalLearningModel {
     private boolean done;
     private int autoRunningSpeed;
     private LearningAlgorithm algorithm;
+    /*
+     *  0 : wait for gui action
+     *  1 : is processing
+     */
+    private boolean solverProcessingState;
 
     public GlobalLearningModel(int nbMaze, int nbIterationPerMaze,
                                 int mXmin, int mYmin, int mXmax, int mYmax,
-                                int mMinLevel, int mMaxLevel, RunningMode rMode) {
+                                int mMinLevel, int mMaxLevel,
+                               RunningMode rMode, LearningAlgorithm algo) {
         this.nbMaze = nbMaze;
         this.nbIterationPerMaze = nbIterationPerMaze;
         this.mXmin = mXmin;
@@ -41,7 +47,7 @@ public class GlobalLearningModel {
         this.mMaxLevel = mMaxLevel;
         this.rMode = rMode;
         this.autoRunningSpeed = Integer.parseInt(AppContext.INSTANCE.getProperty("autoRunningSpeed"));
-        this.setAlgorithm(LearningAlgorithm.RANDOM_SEARCH);
+        this.setAlgorithm(algo);
 
     }
 
@@ -120,5 +126,13 @@ public class GlobalLearningModel {
 
     public void setAlgorithm(LearningAlgorithm algorithm) {
         this.algorithm = algorithm;
+    }
+
+    public boolean isSolverProcessingState() {
+        return solverProcessingState;
+    }
+
+    public void setSolverProcessingState(boolean solverProcessingState) {
+        this.solverProcessingState = solverProcessingState;
     }
 }

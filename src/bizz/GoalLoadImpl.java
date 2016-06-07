@@ -44,4 +44,13 @@ public class GoalLoadImpl extends BizzObjectImpl implements GoalLoad {
     public int getLoadAction() {
         return loadAction;
     }
+
+
+    public String toString() {
+        return "Discover Path:"+loadDiscoverPath
+        +", Grab Key:"+loadGrabKey
+        +", Open Door:"+loadOpenDoor
+        +", Reach Goal:"+loadReachGoal
+        +", Action:"+loadAction;
+    }
 }

@@ -30,7 +30,7 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	 * @param sizex
      * @param sizey
      */
-	public MazeImpl(final NodeDTO startNode, final int sizex, final int sizey) {
+	protected MazeImpl(final NodeDTO startNode, final int sizex, final int sizey) {
 		super();
 		this.startNode = startNode;
 		this.sizex = sizex;
@@ -46,7 +46,7 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	 * @param mazeKeys
      * @param mazeDoors
      */
-	public MazeImpl(final NodeDTO startNode, final int sizex, final int sizey,
+	protected MazeImpl(final NodeDTO startNode, final int sizex, final int sizey,
 					int[][] mazeStructure, int[][] mazeKeys, int[][] mazeDoors) {
 		super();
 		this.startNode = startNode;

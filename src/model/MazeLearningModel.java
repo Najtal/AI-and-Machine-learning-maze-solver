@@ -18,7 +18,6 @@ import java.util.Random;
 public class MazeLearningModel {
 
     private GlobalLearningModel glm;
-    private boolean goForNextStep;
     private MazeDTO mazeOmniscient;
     private MazeDTO mazeNinja;
 
@@ -35,6 +34,7 @@ public class MazeLearningModel {
         this.glm = glm;
         setAlgorithm();
         generateMaze();
+        bestSteps = Integer.MAX_VALUE;
     }
 
     private void setAlgorithm() {
@@ -65,7 +65,7 @@ public class MazeLearningModel {
         // Generate Maze
         mazeOmniscient = gm.generate();
         // Make Ninja maze out of maze
-        mazeNinja = MazeUCCImpl.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
+        mazeNinja = MazeUCCImpl.INSTANCE.getNinjaMazeFromOmniscientMaze(mazeOmniscient);
 
         /*
         while (true) {
@@ -103,23 +103,15 @@ public class MazeLearningModel {
     /*
      * SETTERS
      */
-    private void setBestSteps(int bestSteps) {
-        this.bestSteps = bestSteps;
-    }
-
-    public void setNewBestMvmt(int newMove) {
+    public void setNewBestMvmt(int newMove, GoalDTO goals) {
         if (bestSteps > newMove) {
             bestSteps = newMove;
-            bestGoals = algo.getBestGoals();
+            bestGoals = goals;
         }
     }
 
     public GoalDTO getNextGoalLoad() {
         return algo.getNextGoal();
-    }
-
-    public boolean isGoForNextStep() {
-        return goForNextStep;
     }
 
     public GoalDTO getBestGoals() {

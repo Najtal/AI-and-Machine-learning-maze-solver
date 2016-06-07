@@ -6,6 +6,5 @@ package constant;
 public enum RunningMode {
     FULL_SPEED,
     MAZE_BY_MAZE,
-    STEP_BY_STEP_AUTO,
-    STEP_BY_STEP_MANUAL
+    STEP_BY_STEP_AUTO
 }

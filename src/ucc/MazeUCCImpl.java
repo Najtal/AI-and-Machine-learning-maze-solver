@@ -2,6 +2,7 @@ package ucc;
 
 import bizz.BizzFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -28,8 +29,7 @@ public class MazeUCCImpl implements MazeUCC {
     }
 
 
-    public static MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze) {
-        // TODO should not be static !
+    public MazeDTO getNinjaMazeFromOmniscientMaze(MazeDTO maze) {
         MazeDTO mNinja = BizzFactory.INSTANCE.createNinjaMaze(maze.getStartNode(), maze.getSizex(), maze.getSizey());
         mNinja.setDoorPosition(new HashMap<Integer, NodeDTO>());
         mNinja.setKeyPosition(new HashMap<Integer, NodeDTO>());
@@ -37,4 +37,17 @@ public class MazeUCCImpl implements MazeUCC {
         return mNinja;
     }
 
+    @Override
+    public void clean(MazeDTO maze) {
+        cleanNodes(maze.getGoalNode(), null);
+    }
+
+    private void cleanNodes(NodeDTO node, NodeDTO father) {
+        node.setUsefulNeighbour(new ArrayList<>());
+        for (NodeDTO son : node.getNeighbours()) {
+            if (son != father) {
+                cleanNodes(son, node);
+            }
+        }
+    }
 }

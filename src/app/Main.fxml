@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import java.lang.*?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.PgmController">
    <children>
       <MenuBar>
@@ -54,7 +56,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Settings">
+          <Tab text="Settings">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -84,10 +86,10 @@
                                     <Font size="26.0" />
                                  </font>
                               </Label>
-                              <TextField id="setMinsize" layoutX="278.0" layoutY="133.0" prefHeight="57.0" prefWidth="135.0" text="8" />
-                              <TextField id="setMaxsize" layoutX="278.0" layoutY="203.0" prefHeight="57.0" prefWidth="135.0" text="10" />
-                              <TextField id="setMindoor" layoutX="278.0" layoutY="275.0" prefHeight="57.0" prefWidth="135.0" text="2" />
-                              <TextField id="setMaxDoor" layoutX="278.0" layoutY="348.0" prefHeight="57.0" prefWidth="135.0" text="3" />
+                              <TextField id="setMinsize" fx:id="setMinsize" layoutX="278.0" layoutY="133.0" onAction="#butStart" prefHeight="57.0" prefWidth="135.0" text="7" />
+                              <TextField id="setMaxsize" fx:id="setMaxsize" layoutX="278.0" layoutY="203.0" onAction="#butStart" prefHeight="57.0" prefWidth="135.0" text="7" />
+                              <TextField id="setMindoor" fx:id="setMindoor" layoutX="278.0" layoutY="275.0" onAction="#butStart" prefHeight="57.0" prefWidth="135.0" text="3" />
+                              <TextField id="setMaxDoor" fx:id="setMaxDoor" layoutX="278.0" layoutY="348.0" onAction="#butStart" prefHeight="57.0" prefWidth="135.0" text="3" />
                               <Label layoutX="571.0" layoutY="288.0" text="Machine Learning algorithm">
                                  <font>
                                     <Font size="26.0" />
@@ -107,16 +109,23 @@
                                  <font>
                                     <Font size="26.0" />
                                  </font></Label>
-                              <TextField id="SetNbmaze" layoutX="837.0" layoutY="133.0" prefHeight="57.0" prefWidth="135.0" text="1" />
-                              <TextField id="SetItpermaze" layoutX="837.0" layoutY="203.0" prefHeight="57.0" prefWidth="135.0" text="100" />
-                              <ChoiceBox id="SetMLalgo" disable="true" layoutX="603.0" layoutY="348.0" prefHeight="57.0" prefWidth="332.0" />
+                              <TextField id="setNbmaze" fx:id="setNbmaze" layoutX="837.0" layoutY="133.0" onAction="#butStart" prefHeight="57.0" prefWidth="135.0" text="1" />
+                              <TextField id="setItpermaze" fx:id="setItpermaze" layoutX="837.0" layoutY="203.0" onAction="#butStart" prefHeight="57.0" prefWidth="135.0" text="100" />
+                              <ChoiceBox id="setMLalgo" fx:id="setMLalgo" layoutX="603.0" layoutY="348.0" prefHeight="57.0" prefWidth="332.0">
+                                  <items>
+                                      <FXCollections fx:factory="observableArrayList">
+                                          <String fx:value="Random search" />
+                                          <String fx:value="Grid search" />
+                                      </FXCollections>
+                                  </items>
+                              </ChoiceBox>
                            </children>
                         </AnchorPane>
                      </children>
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="Execution">
+          <Tab text="Execution">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -127,22 +136,30 @@
                                     <Font size="26.0" />
                                  </font>
                               </Label>
-                              <ChoiceBox id="ExMode" disable="true" layoutX="134.0" layoutY="166.0" prefHeight="57.0" prefWidth="320.0" />
+                              <ChoiceBox id="exMode" fx:id="exMode" layoutX="134.0" layoutY="166.0" prefHeight="57.0" prefWidth="320.0">
+                                  <items>
+                                      <FXCollections fx:factory="observableArrayList">
+                                          <String fx:value="Full speed" />
+                                          <String fx:value="Maze by maze" />
+                                          <String fx:value="Step by step auto" />
+                                      </FXCollections>
+                                  </items>
+                              </ChoiceBox>
                               <Label layoutX="100.0" layoutY="244.0" text="Execution Speed">
                                  <font>
                                     <Font size="26.0" />
                                  </font>
                               </Label>
-                              <Slider id="ExSpeed" disable="true" layoutX="134.0" layoutY="293.0" prefHeight="32.0" prefWidth="317.0" />
+                              <Slider id="exSpeed" fx:id="exSpeed" layoutX="134.0" layoutY="293.0" prefHeight="32.0" prefWidth="317.0" />
                               <Label layoutX="61.0" layoutY="61.0" text="Execution">
                                  <font>
                                     <Font size="26.0" />
                                  </font></Label>
-                              <Button id="ExStart" layoutX="114.0" layoutY="363.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="297.0" text="Start" textAlignment="RIGHT" textFill="#3abf20" onAction="#butStart"/>
+                              <Button id="startButton" fx:id="startButton" layoutX="114.0" layoutY="363.0" mnemonicParsing="false" onAction="#butStart" prefHeight="57.0" prefWidth="297.0" text="Start" textAlignment="RIGHT" textFill="#3abf20" />
                               <Label layoutX="553.0" layoutY="61.0" text="Open detail windows" />
-                              <Button id="ExOmnimaze" disable="false" layoutX="622.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Omniscient maze" textAlignment="RIGHT" onAction="#butOmniscient"/>
-                              <Button id="ExSolvermaze" disable="false" layoutX="622.0" layoutY="223.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="326.0" text="Solver maze" textAlignment="RIGHT" onAction="#butExSolver"/>
-                              <Button id="ExData" disable="true" layoutX="623.0" layoutY="309.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="325.0" text="Data analytics" textAlignment="RIGHT" onAction="#butExData"/>
+                              <Button id="omnMazeButton" fx:id="omnMazeButton" disable="true" layoutX="622.0" layoutY="138.0" mnemonicParsing="false" onAction="#butOmniscient" prefHeight="30.0" prefWidth="326.0" text="Omniscient maze" textAlignment="RIGHT" />
+                              <Button id="ninMazeButton" fx:id="ninMazeButton" disable="true" layoutX="622.0" layoutY="223.0" mnemonicParsing="false" onAction="#butExSolver" prefHeight="37.0" prefWidth="326.0" text="Solver maze" textAlignment="RIGHT" />
+                              <Button id="btdata" fx:id="btdata" disable="true" layoutX="623.0" layoutY="309.0" mnemonicParsing="false" onAction="#butExData" prefHeight="32.0" prefWidth="325.0" text="Data analytics" textAlignment="RIGHT" />
                            </children>
                         </AnchorPane>
                      </children>

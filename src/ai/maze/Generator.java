@@ -1,6 +1,7 @@
 package ai.maze;
 
 import bizz.BizzFactory;
+import constant.NodeCondition;
 import exception.MazeException;
 import exception.MazeLevelException;
 import ucc.MazeDTO;
@@ -10,8 +11,6 @@ import util.Position;
 import util.Section;
 
 import java.util.*;
-
-import constant.NodeCondition;
 
 /**
  * Created by jvdur on 12/05/2016.
@@ -132,7 +131,7 @@ public class Generator {
     }
 
     
-    /*
+    /**
      * generate a preconceived maze for tests
      */
     public MazeDTO generateTest(int size, int[][]struct, List<Position> keys, List<Position> doors, Position start) {
@@ -174,8 +173,7 @@ public class Generator {
         return getMaze();
     }
 
-
-    private MazeDTO  getMaze() {
+    private MazeDTO getMaze() {
 
         int[][] mazeKeys = new int[sizex][sizey];
         int[][] mazeDoors = new int[sizex][sizey];

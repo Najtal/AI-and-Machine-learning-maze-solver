@@ -258,8 +258,7 @@ public class SolverImpl implements Solver {
 			}
 		}
 	}
-    
-    
+
     private MyResult jumpToKey(int j, NodeDTO[] nodesWithKey, NodeDTO node, List<Action> new_path,
     		int cpt, int myKey, double reward, Set<NodeDTO>keyRemoved) throws Exception{
     	if (nodesWithKey[j] != null

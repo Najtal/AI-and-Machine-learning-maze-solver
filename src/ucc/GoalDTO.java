@@ -15,4 +15,6 @@ public interface GoalDTO {
 
     int getLoadAction();
 
+    String toString();
+
 }

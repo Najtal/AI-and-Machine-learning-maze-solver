@@ -7,6 +7,9 @@ import constant.RunningStatus;
 import model.GlobalLearningModel;
 import model.MazeLearningModel;
 import ucc.GoalDTO;
+import ucc.GoalUCC;
+import ucc.MazeDTO;
+import ucc.MazeUCC;
 import util.Log;
 
 /**
@@ -40,7 +43,8 @@ public class Learner implements Runnable, LearnerInt {
 
         }
 
-        System.out.println("Best step: " + mlm.getBestSteps());
+        System.out.println("Best number of step: " + mlm.getBestSteps());
+        System.out.println("Goals are : " + mlm.getBestGoals().toString());
 
     }
 
@@ -53,19 +57,23 @@ public class Learner implements Runnable, LearnerInt {
         for(int i=0; i<glm.getNbIterationPerMaze() ; i++) {
 
             // Get the goals
-            GoalDTO goals = mlm.getNextGoalLoad();
+            GoalDTO goals = GoalUCC.INSTANCE.clone(mlm.getNextGoalLoad());
 
             // Instantiate a solver
-            //Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
+            // Solver s = new SolverImpl(mlm.getMazeNinja(), goals);
             // TODO : The solver should take a ninja maze and not a ominshient maze
-            Solver s = new SolverImpl(mlm.getMazeOmniscient(), goals);
+
+            MazeDTO maze = mlm.getMazeOmniscient();
+            MazeUCC.INSTANCE.clean(maze);
+
+            Solver s = new SolverImpl(maze, goals);
 
             // Learn from maze
             int nbStepsNeeded = executeMaze(s);
 
-            System.out.println("Maze " + i + " # steps : "  + nbStepsNeeded);
+            System.out.println("Maze " + i + ": GOALS: "+goals.toString()+" STEPS: "+nbStepsNeeded);
 
-            mlm.setNewBestMvmt(nbStepsNeeded);
+            mlm.setNewBestMvmt(nbStepsNeeded, goals);
         }
 
 
@@ -74,10 +82,9 @@ public class Learner implements Runnable, LearnerInt {
     private int executeMaze(Solver s) {
 
         int nbSteps = 0;
+        System.out.print("Maze execution:");
 
-        while(glm.getrStatus() == RunningStatus.RUNNING
-                && (glm.getrMode() != RunningMode.STEP_BY_STEP_MANUAL
-                    || mlm.isGoForNextStep())) {
+        while(glm.getrStatus() == RunningStatus.RUNNING) {
 
             if (glm.getrMode() == RunningMode.STEP_BY_STEP_AUTO) {
                 try {
@@ -87,19 +94,23 @@ public class Learner implements Runnable, LearnerInt {
                 }
             }
 
-
             try {
                 s.doOneStep();
                 nbSteps++;
+                System.out.print('.');
             } catch (Exception e) {
                 Log.logSevere("Error while executing maze solver next step : " + e.getMessage());
                 e.printStackTrace();
             }
 
             if (s.isSolved()) {
+                System.out.println();
                 Log.logFine("Maze solved");
                 return nbSteps;
             }
+
+            glm.setSolverProcessingState(false);
+
         }
         return 0;
     }
@@ -128,3 +139,4 @@ public class Learner implements Runnable, LearnerInt {
         return mlm;
     }
 }
+
