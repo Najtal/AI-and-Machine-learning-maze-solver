@@ -36,7 +36,11 @@ public class MazeCanvas  extends JPanel {
         int boxWidth = frame.getContentPane().getWidth()/maze.getSizex();
         int boxHeight = frame.getContentPane().getHeight()/maze.getSizey();
 
-        g.setColor(Color.BLACK);
+        if(!isOmniscient) {
+            frame.setTitle("Has key: " + maze.getSolverCarriedKey());
+        }
+
+            g.setColor(Color.BLACK);
 
         // Draw the lines
         for(int i=0; i<maze.getSizex(); i++){

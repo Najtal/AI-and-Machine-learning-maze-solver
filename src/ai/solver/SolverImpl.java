@@ -74,7 +74,10 @@ public class SolverImpl implements Solver {
 		Action a = computedPath.get(0);
 
 		if (a.getTypeAction() == typeAction.DROP_KEY) maze.addSolverkey(a.getDestination(), a.getKey());
-		else if (a.getTypeAction() == typeAction.TAKE_KEY) maze.removeSolverkey(a.getKey());
+		else if (a.getTypeAction() == typeAction.TAKE_KEY) {
+			maze.setSolverCarriedKey(a.getKey());
+			maze.removeSolverkey(a.getKey());
+		}
 		else if (a.getKey() != 0) maze.addSolverkey(a.getDestination(), a.getKey());
 		maze.setSolverPosition(d);
 
