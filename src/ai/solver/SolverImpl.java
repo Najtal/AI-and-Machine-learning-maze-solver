@@ -62,7 +62,7 @@ public class SolverImpl implements Solver {
 
     @Override
     public boolean isSolved() {
-        return this.pos.isGoal();
+        return this.maze.getSolverPosition().isGoal();
     }
 
     @Override
@@ -75,7 +75,8 @@ public class SolverImpl implements Solver {
 
 		if (a.getTypeAction() == typeAction.DROP_KEY) maze.addSolverkey(a.getDestination(), a.getKey());
 		else if (a.getTypeAction() == typeAction.TAKE_KEY) maze.removeSolverkey(a.getKey());
-		else maze.setSolverPosition(d);
+		else if (a.getKey() != 0) maze.addSolverkey(a.getDestination(), a.getKey());
+		maze.setSolverPosition(d);
 
 		return a;
 	}
@@ -120,7 +121,7 @@ public class SolverImpl implements Solver {
     private MyResult bestMove(NodeDTO node, NodeDTO from, double reward, 
     		List<Action> path, NodeDTO[] nodesKey, int myKey, Set<NodeDTO> keyRemoved) throws Exception{
     	List<Action> new_path = new ArrayList<Action>(path);
-    	new_path.add(new Action(typeAction.MOVE, node, 0));
+    	new_path.add(new Action(typeAction.MOVE, node, node.getHasKey()));
 
     	NodeDTO[] nodesWithKey = Arrays.copyOf(nodesKey, nodesKey.length);
     	
@@ -191,10 +192,10 @@ public class SolverImpl implements Solver {
 					//With the key
 					//takeKey();
 					int k = node.getHasKey();
+					new_path.add(new Action(typeAction.TAKE_KEY, node, k));
 					node.setHasKey(0);
 					myKey = k;
 					nodesWithKey[k-1] = null;
-					new_path.add(new Action(typeAction.TAKE_KEY, node, k));
 					double new_reward = reward+key_rwd*Math.pow(gamma, path.size());
 					keyRemoved.add(node);
 
@@ -267,7 +268,7 @@ public class SolverImpl implements Solver {
     		
 			new_path.addAll(p);
 			double new_reward = reward+key_rwd*Math.pow(gamma, new_path.size());
-			new_path.add(new Action(typeAction.TAKE_KEY, node, j+1));
+			new_path.add(new Action(typeAction.TAKE_KEY, nodesWithKey[j], j+1));
 
     		if (node.getPosx()==5 && node.getPosy()==5 && myKey==0){
     			System.out.print("");
@@ -280,7 +281,7 @@ public class SolverImpl implements Solver {
 			for (int i = p.size()-2; i>=0; i--){
 				new_path.add(p.get(i));				
 			}
-			new_path.add(new Action(typeAction.MOVE, node, 0));
+			new_path.add(new Action(typeAction.MOVE, node, node.getHasKey()));
 			
 			int nodeKey = node.getHasKey();
 			MyResult res = bestMove(node, node, new_reward, new_path, nodesWithKey, myKey, keyRemoved);
@@ -299,7 +300,7 @@ public class SolverImpl implements Solver {
     private List<Action> pathFromTo(NodeDTO start, NodeDTO end, List<Action> path, NodeDTO from){
     	List<Action> new_path = new ArrayList<Action>(path);
     	if (start != from){
-    		new_path.add(new Action (typeAction.MOVE, start, 0));
+    		new_path.add(new Action (typeAction.MOVE, start, start.getHasKey()));
     	}
     	if (start==end) {
     		return new_path;

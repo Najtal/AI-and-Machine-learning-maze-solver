@@ -4,9 +4,9 @@ import ucc.NodeDTO;
 
 public class Action {
 
-	private typeAction TypeAction;
-	private NodeDTO destination;
-	private int key;
+	private final typeAction TypeAction;
+	private final NodeDTO destination;
+	private final int key;
 
 	public Action(typeAction type, NodeDTO destination, int key){
 		this.destination = destination;
