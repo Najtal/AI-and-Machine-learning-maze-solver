@@ -61,4 +61,7 @@ public interface MazeDTO {
 
     void addSolverkey(NodeDTO solverkey, int key);
 
+    int getSolverCarriedKey();
+
+    void setSolverCarriedKey(int key);
 }

@@ -1,9 +1,5 @@
 package exception;
 
-import java.util.logging.Level;
-
-import app.AppContext;
-
 public class NoKeyException extends Exception{
 
 	/**

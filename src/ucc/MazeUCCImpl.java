@@ -40,6 +40,8 @@ public class MazeUCCImpl implements MazeUCC {
     @Override
     public void clean(MazeDTO maze) {
         cleanNodes(maze.getGoalNode(), null);
+        maze.setSolverCarriedKey(0);
+        maze.setSolverkeys(new NodeDTO[maze.getNbKey()+1]);
     }
 
     private void cleanNodes(NodeDTO node, NodeDTO father) {

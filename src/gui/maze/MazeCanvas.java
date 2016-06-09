@@ -36,7 +36,11 @@ public class MazeCanvas  extends JPanel {
         int boxWidth = frame.getContentPane().getWidth()/maze.getSizex();
         int boxHeight = frame.getContentPane().getHeight()/maze.getSizey();
 
-        g.setColor(Color.BLACK);
+        //if(!isOmniscient) {
+        //    frame.setTitle("Has key: " + maze.getSolverCarriedKey());
+        //}
+
+            g.setColor(Color.BLACK);
 
         // Draw the lines
         for(int i=0; i<maze.getSizex(); i++){
@@ -84,20 +88,20 @@ public class MazeCanvas  extends JPanel {
                 g.setColor(Color.GREEN);
                 g.fillOval(key.getPosy()*boxWidth, key.getPosx()*boxHeight,boxWidth, boxHeight);
 
-                g.setColor(Color.WHITE);
-                g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
+                //g.setColor(Color.WHITE);
+                //g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
             }
         } else {
             for (NodeDTO key : maze.getSolverkeys()) {
                 if(key == null)
                     continue;
-                String nbDoor = key.getHasKey()+"";
+                //String nbDoor = key.getHasKey()+"";
 
                 g.setColor(Color.GREEN);
                 g.fillOval(key.getPosy()*boxWidth, key.getPosx()*boxHeight,boxWidth, boxHeight);
 
-                g.setColor(Color.WHITE);
-                g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
+                //g.setColor(Color.WHITE);
+                //g.drawString(nbDoor, (int) key.getPosy()*boxWidth+45, (int) key.getPosx()*boxHeight+45);
             }
         }
 

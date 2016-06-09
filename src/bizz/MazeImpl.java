@@ -2,7 +2,6 @@ package bizz;
 
 import ucc.NodeDTO;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -26,6 +25,7 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 
 	private NodeDTO solverPosition;
 	private NodeDTO[] solverkeys;
+	private int solverCarriedKey;
 
 
 	/**
@@ -161,6 +161,10 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	public void setGoalNode(NodeDTO goalNode) {
 		this.goalNode = goalNode;
 	}
+
+	public int getSolverCarriedKey() { return this.solverCarriedKey; }
+
+	public void setSolverCarriedKey(int k) { this.solverCarriedKey = k; }
 
 	public NodeDTO[] getSolverkeys() {
 		return solverkeys;

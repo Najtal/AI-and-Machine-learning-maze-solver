@@ -1,7 +1,6 @@
 package ai.algorithm;
 
 import bizz.BizzFactory;
-import bizz.GoalLoad;
 import ucc.GoalDTO;
 
 import java.util.ArrayList;
