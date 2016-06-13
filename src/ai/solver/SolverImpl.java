@@ -62,7 +62,8 @@ public class SolverImpl implements Solver {
 
     @Override
     public boolean isSolved() {
-        return this.maze.getSolverPosition().isGoal();
+		if (this.maze.getSolverPosition() == null) return false;
+		return this.maze.getSolverPosition().isGoal();
     }
 
     @Override
@@ -73,13 +74,25 @@ public class SolverImpl implements Solver {
 		NodeDTO d = computedPath.get(0).getDestination();
 		Action a = computedPath.get(0);
 
-		if (a.getTypeAction() == typeAction.DROP_KEY) maze.addSolverkey(a.getDestination(), a.getKey());
+		if (a.getTypeAction() == typeAction.DROP_KEY) {
+			maze.addSolverkey(a.getDestination(), a.getKey());
+			maze.setSolverCarriedKey(0);
+		}
 		else if (a.getTypeAction() == typeAction.TAKE_KEY) {
 			maze.setSolverCarriedKey(a.getKey());
 			maze.removeSolverkey(a.getKey());
 		}
+		else if (a.getDestination().getIsDoor() != 0) a.getDestination().setCondition(NodeCondition.NONE);
 		else if (a.getKey() != 0) maze.addSolverkey(a.getDestination(), a.getKey());
 		maze.setSolverPosition(d);
+
+		//System.out.print(a);
+		//System.out.print(", key :"+maze.getSolverCarriedKey()+", door :"+a.getDestination().getIsDoor()+"\n");
+		//System.out.print("Discovered keys :");
+		//for (NodeDTO n: maze.getSolverkeys()){
+		//	if (n!=null) System.out.print(n + "("+n.getHasKey()+")\t");
+		//}
+		//System.out.println();
 
 		return a;
 	}
@@ -123,15 +136,17 @@ public class SolverImpl implements Solver {
 
     private MyResult bestMove(NodeDTO node, NodeDTO from, double reward, 
     		List<Action> path, NodeDTO[] nodesKey, int myKey, Set<NodeDTO> keyRemoved) throws Exception{
+
     	List<Action> new_path = new ArrayList<Action>(path);
     	new_path.add(new Action(typeAction.MOVE, node, node.getHasKey()));
-
     	NodeDTO[] nodesWithKey = Arrays.copyOf(nodesKey, nodesKey.length);
     	
 		List<NodeDTO> neighbours = node.getNeighbours();
     	
     	if (path.size() > this.treshold){
-    		return new MyResult(reward, new_path, nodesWithKey, myKey, keyRemoved);
+			if (node.getCondition() == NodeCondition.NONE || node.getIsDoor() == myKey)
+    			return new MyResult(reward, new_path, nodesWithKey, myKey, keyRemoved);
+			else return new MyResult(reward, path, nodesWithKey, myKey, keyRemoved);
     	}
     	
     	if (node.getUsefulNeighbours().isEmpty()) {
@@ -139,7 +154,6 @@ public class SolverImpl implements Solver {
     			return new MyResult(reward + goal_rwd*Math.pow(gamma,path.size()), new_path, nodesWithKey, myKey, keyRemoved);
     		}
     		if (node.getIsDoor()!=0){
-    			node.setCondition(NodeCondition.NONE);
     			return new MyResult(reward + door_rwd*Math.pow(gamma,path.size()), new_path, nodesWithKey, myKey, keyRemoved);
     		}
     		else{
@@ -163,12 +177,7 @@ public class SolverImpl implements Solver {
 				
 				//if there's a key on the floor, we should remember it
 				if (node.getHasKey()!=0){
-					try{
-						nodesWithKey[node.getHasKey()-1] = node;
-					}catch(Exception e){
-						System.out.print(node+","+node.getHasKey());
-						throw e;
-					}
+					nodesWithKey[node.getHasKey()-1] = node;
 				}
 				
 				// Move in the best direction
@@ -273,9 +282,6 @@ public class SolverImpl implements Solver {
 			double new_reward = reward+key_rwd*Math.pow(gamma, new_path.size());
 			new_path.add(new Action(typeAction.TAKE_KEY, nodesWithKey[j], j+1));
 
-    		if (node.getPosx()==5 && node.getPosy()==5 && myKey==0){
-    			System.out.print("");
-    		}
 			myKey = j+1;
 			nodesWithKey[j].setHasKey(0);
 			nodesWithKey[j] = null;
@@ -355,10 +361,11 @@ public class SolverImpl implements Solver {
 				node.setHasKey(nodeKey);
 			}else{
 				if (myKey != 0) {
+					NodeDTO n = DropKeyInDeadend(node, next_node, new_path, myKey);
 					//dropKey();
-					node.setHasKey(myKey);
-					nodesWithKey[node.getHasKey()-1] = node;
-					new_path.add(new Action(typeAction.DROP_KEY, node, myKey));
+					n.setHasKey(myKey);
+					nodesWithKey[node.getHasKey() - 1] = n;
+					new_path.add(new Action(typeAction.DROP_KEY, n, myKey));
 					myKey = 0;
 				}
 				door[next_node.getIsDoor()-1] = true;
@@ -371,14 +378,8 @@ public class SolverImpl implements Solver {
 				// Only if we can move to the neighbour
 				if (from != neighbours.get(i) &&
 						node.getUsefulNeighbours().contains(neighbours.get(i))) {
-					if (neighbours.get(i).getCondition() == NodeCondition.NEED_KEY){
-						door[neighbours.get(i).getIsDoor()-1] = true;
-					}
 					if (neighbours.get(i).getCondition() == NodeCondition.NONE
 						|| neighbours.get(i).getIsDoor() == myKey){
-						if (node.getPosx()==4 && node.getPosy()==3){
-							System.out.print("");
-						}
 						int nodeKey = node.getHasKey();
 						MyResult res = bestMove(neighbours.get(i), node, reward, new_path, nodesWithKey, myKey, keyRemoved);
 						node.setHasKey(nodeKey);
@@ -392,6 +393,7 @@ public class SolverImpl implements Solver {
 							best_res = res;
 						}
 					}
+					else door[neighbours.get(i).getIsDoor()-1] = true;
 				}
 			}
 		}
@@ -413,7 +415,22 @@ public class SolverImpl implements Solver {
 		if (path.get(path.size()-1).getDestination()==null) best_res.reward = -1;
 		return best_res;
     }
-    
+
+	private NodeDTO DropKeyInDeadend(NodeDTO node, NodeDTO from, List<Action>path, int myKey) {
+		if (node.getHasKey() == 0) return node;
+		else {
+			List<NodeDTO> neighbors = node.getNeighbours();
+			if (neighbors.get(0) != from) {
+				path.add(new Action(typeAction.MOVE, neighbors.get(0), myKey));
+				return DropKeyInDeadend(neighbors.get(0), node, path, myKey);
+			}
+			else {
+				path.add(new Action(typeAction.MOVE, neighbors.get(1), myKey));
+				return DropKeyInDeadend(neighbors.get(1), node, path, myKey);
+			}
+		}
+	}
+
     /*
      * class just to return the reward and the path in bestMove()
      */
@@ -741,7 +758,7 @@ public class SolverImpl implements Solver {
     	long startTime = System.currentTimeMillis();
 
     	
-    	for (int j=0; j< 300; j++){
+    	for (int j=0; j< 1; j++){
     		MazeDTO maze = null;
     		while (maze == null){
     			try{
@@ -759,7 +776,7 @@ public class SolverImpl implements Solver {
 	        System.out.print("door :" + goals.getLoadOpenDoor() + "\n");
 	        System.out.print("goal :" + goals.getLoadReachGoal() + "\n\n");
 
-			for (int k = 0; k<2;k++) {
+			for (int k = 0; k<1;k++) {
 
 				SolverImpl s = new SolverImpl(maze, goals);
 

@@ -174,9 +174,9 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 		this.solverkeys = solverkeys;
 	}
 
-	public void removeSolverkey(int key) { this.solverkeys[key] = null; }
+	public void removeSolverkey(int key) { this.solverkeys[key-1] = null; }
 
-	public void addSolverkey(NodeDTO solverkey, int key) { this.solverkeys[key] = solverkey; }
+	public void addSolverkey(NodeDTO solverkey, int key) { this.solverkeys[key-1] = solverkey; }
 
 	public NodeDTO getSolverPosition() {
 		return solverPosition;
