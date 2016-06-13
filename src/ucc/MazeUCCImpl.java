@@ -1,6 +1,7 @@
 package ucc;
 
 import bizz.BizzFactory;
+import constant.NodeCondition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,16 +40,25 @@ public class MazeUCCImpl implements MazeUCC {
 
     @Override
     public void clean(MazeDTO maze) {
-        cleanNodes(maze.getGoalNode(), null);
+        if (maze.getKeysAtStart() == null) maze.setKeysAtStart(new NodeDTO[maze.getNbKey()+1]);
+        NodeDTO[] keys = maze.getKeysAtStart();
+        cleanNodes(maze.getGoalNode(), null, keys);
         maze.setSolverCarriedKey(0);
         maze.setSolverkeys(new NodeDTO[maze.getNbKey()+1]);
+        for (int i=0; i< keys.length; i++){
+            if (keys[i] != null) keys[i].setHasKey(i+1);
+        }
     }
 
-    private void cleanNodes(NodeDTO node, NodeDTO father) {
+    private void cleanNodes(NodeDTO node, NodeDTO father, NodeDTO[] keys) {
         node.setUsefulNeighbour(new ArrayList<>());
+        if (node.getIsDoor() != 0) node.setCondition(NodeCondition.NEED_KEY);
+        if (node.getHasKey() != 0 && keys[node.getHasKey()-1] != null && keys[node.getHasKey()-1] != node){
+            node.setHasKey(0);
+        }
         for (NodeDTO son : node.getNeighbours()) {
             if (son != father) {
-                cleanNodes(son, node);
+                cleanNodes(son, node, keys);
             }
         }
     }

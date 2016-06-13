@@ -64,4 +64,10 @@ public interface MazeDTO {
     int getSolverCarriedKey();
 
     void setSolverCarriedKey(int key);
+
+    NodeDTO[] getKeysAtStart();
+
+    void setKeysAtStart(NodeDTO[] keysLocation);
+
+    void addKeyAtStart(int k, NodeDTO keyLocation);
 }

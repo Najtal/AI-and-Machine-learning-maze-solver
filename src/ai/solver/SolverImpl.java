@@ -68,8 +68,8 @@ public class SolverImpl implements Solver {
 
     @Override
     public Action doOneStep() throws Exception{
-        computedPath.remove(0);
-		if (this.computedPath.isEmpty()) computePath();//System.out.print(computedPath);
+		computedPath.remove(0);
+		while (this.computedPath.isEmpty()) computePath();//System.out.print(computedPath);
 
 		NodeDTO d = computedPath.get(0).getDestination();
 		Action a = computedPath.get(0);
@@ -79,6 +79,8 @@ public class SolverImpl implements Solver {
 			maze.setSolverCarriedKey(0);
 		}
 		else if (a.getTypeAction() == typeAction.TAKE_KEY) {
+			if (maze.getKeysAtStart() == null) maze.setKeysAtStart(new NodeDTO[this.level]);
+			if (maze.getKeysAtStart()[a.getKey()]==null) maze.addKeyAtStart(a.getKey(), a.getDestination());
 			maze.setSolverCarriedKey(a.getKey());
 			maze.removeSolverkey(a.getKey());
 		}
@@ -86,7 +88,7 @@ public class SolverImpl implements Solver {
 		else if (a.getKey() != 0) maze.addSolverkey(a.getDestination(), a.getKey());
 		maze.setSolverPosition(d);
 
-		//System.out.print(a);
+		//System.out.println(a);
 		//System.out.print(", key :"+maze.getSolverCarriedKey()+", door :"+a.getDestination().getIsDoor()+"\n");
 		//System.out.print("Discovered keys :");
 		//for (NodeDTO n: maze.getSolverkeys()){
@@ -128,6 +130,9 @@ public class SolverImpl implements Solver {
 //				System.out.print(path.get(i) + ", ");
 //			}
 //			System.out.print("\n");
+//			System.out.println("remove "+path.get(0));
+			path.remove(0);
+//			System.out.println("path"+path);
 			this.computedPath = path;
 		} catch (Exception e) {
 			throw e;
@@ -362,11 +367,13 @@ public class SolverImpl implements Solver {
 			}else{
 				if (myKey != 0) {
 					NodeDTO n = DropKeyInDeadend(node, next_node, new_path, myKey);
-					//dropKey();
-					n.setHasKey(myKey);
-					nodesWithKey[node.getHasKey() - 1] = n;
-					new_path.add(new Action(typeAction.DROP_KEY, n, myKey));
-					myKey = 0;
+					if (n != null) {
+						//dropKey();
+						n.setHasKey(myKey);
+						nodesWithKey[node.getHasKey() - 1] = n;
+						new_path.add(new Action(typeAction.DROP_KEY, n, myKey));
+						myKey = 0;
+					} else best_res.setReward(-1);
 				}
 				door[next_node.getIsDoor()-1] = true;
 			}
@@ -420,6 +427,7 @@ public class SolverImpl implements Solver {
 		if (node.getHasKey() == 0) return node;
 		else {
 			List<NodeDTO> neighbors = node.getNeighbours();
+			if (neighbors.size() == 1) return null;
 			if (neighbors.get(0) != from) {
 				path.add(new Action(typeAction.MOVE, neighbors.get(0), myKey));
 				return DropKeyInDeadend(neighbors.get(0), node, path, myKey);

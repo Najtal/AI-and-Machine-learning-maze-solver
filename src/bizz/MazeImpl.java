@@ -26,6 +26,7 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	private NodeDTO solverPosition;
 	private NodeDTO[] solverkeys;
 	private int solverCarriedKey;
+	private NodeDTO[] keysAtStart;
 
 
 	/**
@@ -165,6 +166,15 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	public int getSolverCarriedKey() { return this.solverCarriedKey; }
 
 	public void setSolverCarriedKey(int k) { this.solverCarriedKey = k; }
+
+	@Override
+	public NodeDTO[] getKeysAtStart() { return this.keysAtStart; }
+
+	@Override
+	public void setKeysAtStart(NodeDTO[] keysLocation) { this.keysAtStart = keysLocation; }
+
+	@Override
+	public void addKeyAtStart(int k, NodeDTO keyLocation) { this.keysAtStart[k-1] = keyLocation; }
 
 	public NodeDTO[] getSolverkeys() {
 		return solverkeys;
