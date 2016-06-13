@@ -70,4 +70,6 @@ public interface MazeDTO {
     void setKeysAtStart(NodeDTO[] keysLocation);
 
     void addKeyAtStart(int k, NodeDTO keyLocation);
+
+    boolean checkMazeValidity();
 }

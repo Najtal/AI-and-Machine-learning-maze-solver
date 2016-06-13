@@ -55,6 +55,9 @@ public class Generator {
 
     private int idKey;
 
+    private List<Integer> allKeys;
+    private List<Integer> allDoors;
+
     /**
      * Constructor : set a new maze-generator object
      * @param sizex the x axis length of the maze
@@ -65,6 +68,8 @@ public class Generator {
         this.sizex = sizex;
         this.sizey = sizey;
         this.level = level;
+        this.allDoors = new ArrayList<Integer>();
+        this.allKeys = new ArrayList<Integer>();
     }
 
     /**
@@ -515,6 +520,7 @@ public class Generator {
         }
         
         if (nextStep.getIsDoor()==0){
+            allDoors.add(doorLevel);
 	        nextStep.setIsDoor(doorLevel);
 	        nextStep.setCondition(NodeCondition.NEED_KEY);
 	        mazeMultiData[nextStep.getPosx()][nextStep.getPosy()][3] = doorLevel;
@@ -600,6 +606,7 @@ public class Generator {
         		j = idKey;
         		idKey++;
         	}
+            this.allKeys.add(j);
 	        mazeMultiData[walker.getPosx()][walker.getPosy()][4] = j;
 	        nodeStructure[walker.getPosx()][walker.getPosy()].setHasKey(j);
         }else{
@@ -734,4 +741,13 @@ public class Generator {
         System.out.println("Goal  : " + mazeGoalPosition.getX() + ":" + mazeGoalPosition.getY());
         System.out.println("");
     }
+
+    public boolean checkMazeValidity() {
+        if (allDoors.size() > allKeys.size()) return false;
+        for (int d : allDoors){
+            if (!allKeys.contains(d)) return false;
+        }
+        return true;
+    }
+
 }

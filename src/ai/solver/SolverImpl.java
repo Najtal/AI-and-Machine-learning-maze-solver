@@ -3,6 +3,7 @@ package ai.solver;
 import ai.maze.Generator;
 import bizz.GoalLoadImpl;
 import constant.NodeCondition;
+import exception.MyTimeException;
 import ucc.GoalDTO;
 import ucc.MazeDTO;
 import ucc.NodeDTO;
@@ -29,6 +30,9 @@ public class SolverImpl implements Solver {
 	private List<Action> computedPath;
 	private MazeDTO maze;
 
+	private long start_time;
+	private int max_cpt;
+	private boolean emergency_stop;
 
 	/**
      *
@@ -58,6 +62,10 @@ public class SolverImpl implements Solver {
 		this.maze.setSolverkeys(new NodeDTO[this.level]);
 		this.computedPath = new ArrayList<Action>();
         this.computedPath.add(new Action(typeAction.MOVE, this.pos, 0));
+
+		this.start_time = System.currentTimeMillis();
+		this.emergency_stop = false;
+		this.max_cpt = 0;
     }
 
     @Override
@@ -141,6 +149,21 @@ public class SolverImpl implements Solver {
 
     private MyResult bestMove(NodeDTO node, NodeDTO from, double reward, 
     		List<Action> path, NodeDTO[] nodesKey, int myKey, Set<NodeDTO> keyRemoved) throws Exception{
+
+		long current_time = System.currentTimeMillis();
+//		System.out.println((current_time - start_time));
+		if ((current_time - start_time) > 60000){
+			throw new MyTimeException("takes too much time, probably a loop");
+		}
+
+		int cpt = 0;
+		if (myKey != 0) cpt++;
+		for (NodeDTO n : nodesKey) {
+			if (n != null) cpt++;
+		}
+		if (cpt < this.max_cpt) {
+			System.out.println("!!!!!!!!!!!!!!!!!!");
+		}
 
     	List<Action> new_path = new ArrayList<Action>(path);
     	new_path.add(new Action(typeAction.MOVE, node, node.getHasKey()));
@@ -654,44 +677,70 @@ public class SolverImpl implements Solver {
     }
 
     private static MazeDTO test5(){
-    	int size = 5;
+    	int size = 7;
     	int[][] structure = new int[size][size];
-    	structure[0][0] = 4;
-    	structure[1][0] = 12;
-    	structure[2][0] = 10;
-    	structure[3][0] = 4;
-    	structure[4][0] = 10;
-    	structure[0][1] = 6;
-    	structure[1][1] = 8;
-    	structure[2][1] = 5;
-    	structure[3][1] = 12;
-    	structure[4][1] = 11;
+    	structure[0][0] = 2;
+    	structure[1][0] = 4;
+    	structure[2][0] = 14;
+    	structure[3][0] = 10;
+    	structure[4][0] = 6;
+		structure[3][0] = 14;
+		structure[4][0] = 10;
+    	structure[0][1] = 5;
+    	structure[1][1] = 10;
+    	structure[2][1] = 1;
+    	structure[3][1] = 3;
+    	structure[4][1] = 3;
+		structure[5][1] = 3;
+		structure[6][1] = 3;
     	structure[0][2] = 3;
-    	structure[1][2] = 6;
-    	structure[2][2] = 12;
-    	structure[3][2] = 12;
+    	structure[1][2] = 2;
+    	structure[2][2] = 5;
+    	structure[3][2] = 10;
     	structure[4][2] = 9;
+		structure[5][2] = 3;
+		structure[6][2] = 3;
     	structure[0][3] = 7;
-    	structure[1][3] = 9;
-    	structure[2][3] = 4;
-    	structure[3][3] = 14;
-    	structure[4][3] = 10;
-    	structure[0][4] = 5;
-    	structure[1][4] = 12;
-    	structure[2][4] = 12;
-    	structure[3][4] = 9;
-    	structure[4][4] = 1;
+    	structure[1][3] = 10;
+    	structure[2][3] = 3;
+    	structure[3][3] = 7;
+    	structure[4][3] = 8;
+		structure[5][3] = 3;
+		structure[6][3] = 3;
+    	structure[0][4] = 3;
+    	structure[1][4] = 5;
+    	structure[2][4] = 9;
+    	structure[3][4] = 1;
+    	structure[4][4] = 6;
+		structure[5][4] = 9;
+		structure[6][4] = 3;
+		structure[0][5] = 5;
+		structure[1][5] = 10;
+		structure[2][5] = 4;
+		structure[3][5] = 14;
+		structure[4][5] = 9;
+		structure[5][5] = 2;
+		structure[6][5] = 3;
+		structure[0][6] = 4;
+		structure[1][6] = 13;
+		structure[2][6] = 12;
+		structure[3][6] = 9;
+		structure[4][6] = 4;
+		structure[5][6] = 13;
+		structure[6][6] = 9;
     	
     	List<Position> doors = new ArrayList<Position>();
-    	doors.add(new Position(2,3));
-    	doors.add(new Position(0,2));
+    	doors.add(new Position(4,6));
+    	doors.add(new Position(6,2));
+		doors.add(new Position(2,2));
     	List<Position> keys = new ArrayList<Position>();
-    	keys.add(new Position(3,0));
-    	keys.add(new Position(3,2));
+    	keys.add(new Position(2,3));
+    	keys.add(new Position(5,2));
+		keys.add(new Position(6,0));
 
 
     	Generator gen = new Generator(size,size,keys.size());
-    	MazeDTO maze = gen.generateTest(size, structure, keys, doors, new Position(3,3));
+    	MazeDTO maze = gen.generateTest(size, structure, keys, doors, new Position(2,4));
     	return maze;
     }    
  
@@ -777,7 +826,7 @@ public class SolverImpl implements Solver {
     				continue;
     			}
     		}
-	    	//maze = test6();
+	    	maze = test5();
 	        GoalDTO goals = new GoalLoadImpl(10, 20, 30, 400, 1);
 	        System.out.print("discover :" + goals.getLoadDiscoverPath() + "\n");
 	        System.out.print("key :" + goals.getLoadGrabKey() + "\n");

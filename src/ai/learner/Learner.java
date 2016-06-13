@@ -4,6 +4,7 @@ import ai.solver.Solver;
 import ai.solver.SolverImpl;
 import constant.RunningMode;
 import constant.RunningStatus;
+import exception.MyTimeException;
 import model.GlobalLearningModel;
 import model.MazeLearningModel;
 import ucc.GoalDTO;
@@ -11,6 +12,8 @@ import ucc.GoalUCC;
 import ucc.MazeDTO;
 import ucc.MazeUCC;
 import util.Log;
+
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by jvdur on 13/05/2016.
@@ -37,9 +40,13 @@ public class Learner implements Runnable, LearnerInt {
             this.mlm = new MazeLearningModel(glm);
 
             // learn maze
-            learnMaze();
-            System.out.println("Best number of step: " + mlm.getBestSteps());
-            System.out.println("Goals are : " + mlm.getBestGoals().toString());
+            try {
+                learnMaze();
+                System.out.println("Best number of step: " + mlm.getBestSteps());
+                System.out.println("Goals are : " + mlm.getBestGoals().toString());
+            } catch (MyTimeException e) {
+                i--;
+            }
         }
     }
 
@@ -51,7 +58,7 @@ public class Learner implements Runnable, LearnerInt {
     /**
      * Will execute and solve the maze the amount of time defined
      */
-    private void learnMaze(){
+    private void learnMaze() throws MyTimeException {
 
         // For the # of time to execute the maze
         for(int i=0; i<glm.getNbIterationPerMaze() ; i++) {
@@ -82,7 +89,7 @@ public class Learner implements Runnable, LearnerInt {
 
     }
 
-    private int executeMaze(Solver s) {
+    private int executeMaze(Solver s) throws MyTimeException {
 
         int nbSteps = 0;
         System.out.print("Maze execution:");
@@ -101,6 +108,9 @@ public class Learner implements Runnable, LearnerInt {
                 s.doOneStep();
                 nbSteps ++;
                 System.out.print('.');
+            } catch (MyTimeException e){
+                System.out.print(e.getMessage());
+                throw e;
             } catch (Exception e) {
                 Log.logSevere("Error while executing maze solver next step : " + e.getMessage());
                 e.printStackTrace();

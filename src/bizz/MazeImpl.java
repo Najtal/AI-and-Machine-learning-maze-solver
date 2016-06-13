@@ -195,4 +195,6 @@ public class MazeImpl extends BizzObjectImpl implements Maze {
 	public void setSolverPosition(NodeDTO solverPosition) {
 		this.solverPosition = solverPosition;
 	}
+
+	public boolean checkMazeValidity() { return true; }
 }

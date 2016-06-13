@@ -76,11 +76,15 @@ public class MazeLearningModel {
         while (true) {
             try {
                 mazeOmniscient = gm.generate();
+                if (!mazeOmniscient.checkMazeValidity()) {
+                    Log.logSevere("Maze not valid, the keys cannot open all the doors");
+                    throw new Exception("Maze not valid");
+                }
                 break;
             } catch (Exception e) {
                 if (trials == trialsMax) {
                     Log.logSevere("Could not create the maze, parameters are to restrictive !"
-                    +"sizex:" + sizex + ", sizey:"+sizey + ", level:" + level);
+                    +"sizex:" + sizex + ", sizey:"+sizey + ", level:" + level+ ", error:"+e.getMessage());
                     throw new FatalException("Could not create the maze, parameters are to restrictive !");
                 } else {
                     System.out.println("could not create maze :'(");
